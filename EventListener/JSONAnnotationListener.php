@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelEvents,
 	Symfony\Component\EventDispatcher\EventSubscriberInterface,
 	Symfony\Component\HttpFoundation\JsonResponse;
 
-use CarpCRM\DefaultBundle\Configuration\JSONResponse as JSONAnnotation;
+use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation;
 
 /**
  * Class JSONAnnotationListener
