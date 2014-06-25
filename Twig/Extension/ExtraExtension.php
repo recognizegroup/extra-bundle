@@ -35,8 +35,17 @@ class ExtraExtension extends \Twig_Extension {
 				$request = $requestStack->getCurrentRequest();
 				return $request->get($param);
 			}),
-			new \Twig_SimpleFunction('queryString', function($prefix = '?') use ($requestStack) {
-				return $prefix . $requestStack->getCurrentRequest()->getQueryString();
+			new \Twig_SimpleFunction('queryString', function(array $filter = array(), $assoc = false) use ($requestStack) {
+				$stack = $requestStack->getCurrentRequest()->query->all();
+				$filtered = array_diff_key($stack, array_flip($filter));
+				if(!empty($filtered) && !$assoc) {
+					array_walk($filtered, function(&$item, $key) {
+						$item = $key . '=' . $item;
+					});
+					return '?'.implode('&', $filtered);
+				} elseif($assoc) { // When assoc mode
+					return $filtered;
+				} else return '';
 			})
 		);
 	}
