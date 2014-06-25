@@ -49,12 +49,24 @@ class BaseRepository extends EntityRepository {
 
 	/**
 	 * @param QueryBuilder $query
+	 * @param array $orders
+	 */
+	protected function addOrders(QueryBuilder &$query, array $orders) {
+		foreach($orders as $sort => $order) {
+			if(in_array($order, array('asc','desc')) && !empty($sort)) {
+				$query->addOrderBy($sort, $order);
+			}
+		}
+	}
+
+	/**
+	 * @param QueryBuilder $query
 	 * @param int $start
 	 * @param bool|int $limit
 	 * @return string
 	 */
 	public function getQuery(QueryBuilder $query, $start = 0, $limit = false) {
-		return ($limit) ? sprintf('%s LIMIT %s,%s', $query->getDQL(), $start, $limit) : $query->getDQL();
+		return ($limit) ? sprintf('%s LIMIT %s,%s', $query->getDQL(), ($start*$limit), $limit) : $query->getDQL();
 	}
 
 }
