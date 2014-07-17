@@ -14,6 +14,7 @@
 		<service id="recognize_extra.twig.extension" class="%recognize_extra.twig.extension.class%">
 			<tag name="twig.extension" />
 			<argument type="service" id="request_stack" />
+			<argument type="service" id="doctrine"/>
 		</service>
 	</services>
 </container>

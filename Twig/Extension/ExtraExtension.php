@@ -2,7 +2,8 @@
 
 namespace Recognize\ExtraBundle\Twig\Extension;
 
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Bridge\Doctrine\RegistryInterface,
+	Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class ExtraExtension
@@ -16,12 +17,19 @@ class ExtraExtension extends \Twig_Extension {
 	 */
 	protected $requestStack;
 
+	/**
+	 * @var \Symfony\Bridge\Doctrine\RegistryInterface
+	 */
+	protected $registry;
+
 
 	/**
 	 * @param RequestStack $request
+	 * @param \Symfony\Bridge\Doctrine\RegistryInterface $registry
 	 */
-	public function __construct(RequestStack $request) {
+	public function __construct(RequestStack $request, RegistryInterface $registry) {
 		$this->requestStack = $request;
+		$this->registry =  $registry;
 	}
 
 	/**
@@ -46,7 +54,8 @@ class ExtraExtension extends \Twig_Extension {
 				} elseif($assoc) { // When assoc mode
 					return $filtered;
 				} else return '';
-			})
+			}),
+			'repository' => new \Twig_Function_Method($this, 'getRepository')
 		);
 	}
 
@@ -57,6 +66,14 @@ class ExtraExtension extends \Twig_Extension {
 		return array(
 			'query_string' => new \Twig_Filter_Method($this, 'getQueryString')
 		);
+	}
+
+	/**
+	 * @param $repository
+	 * @return \Doctrine\Common\Persistence\ObjectRepository
+	 */
+	public function getRepository($repository) {
+		return $this->registry->getRepository($repository);
 	}
 
 	/**
