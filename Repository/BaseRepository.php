@@ -36,7 +36,9 @@ class BaseRepository extends EntityRepository {
 	 */
 	protected function getEscapedCollection(Array $collection) {
 		foreach($collection as &$value) {
-			$value = sprintf('%s',$value);
+			if(!is_numeric($value)) { // When it's not an numeric
+				$value = sprintf('%s', $value);
+			}
 		}
 		return $collection;
 	}
@@ -81,6 +83,15 @@ class BaseRepository extends EntityRepository {
 	 */
 	public function getQuery(QueryBuilder $query, $start = 0, $limit = false) {
 		return ($limit) ? sprintf('%s LIMIT %s,%s', $query->getDQL(), ($start*$limit), $limit) : $query->getDQL();
+	}
+
+	/**
+	 * Simple wrapper to shorten literal usage
+	 * @param $string
+	 * @return Expr\Literal
+	 */
+	public function getLiteral($string) {
+		return $this->qb->expr()->literal($string);
 	}
 
 	/**
