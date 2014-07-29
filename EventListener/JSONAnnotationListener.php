@@ -8,10 +8,10 @@ use Doctrine\Common\Annotations\FileCacheReader,
 use Symfony\Component\HttpKernel\KernelEvents,
 	Symfony\Component\HttpKernel\Event\FilterControllerEvent,
 	Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
-	Symfony\Component\EventDispatcher\EventSubscriberInterface,
-	Symfony\Component\HttpFoundation\JsonResponse;
+	Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation;
+use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation,
+	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class JSONAnnotationListener
