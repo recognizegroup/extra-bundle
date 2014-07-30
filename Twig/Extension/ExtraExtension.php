@@ -64,8 +64,19 @@ class ExtraExtension extends \Twig_Extension {
 	 */
 	public function getFilters() {
 		return array(
-			'query_string' => new \Twig_Filter_Method($this, 'getQueryString')
+			'query_string' => new \Twig_Filter_Method($this, 'getQueryString'),
+			'unset' => new \Twig_Filter_Method($this, 'unsetValue')
 		);
+	}
+
+	/**
+	 * @param array $array
+	 * @param $value
+	 * @return array
+	 */
+	public function unsetValue(array $array, $value) {
+		if(isset($array[$value])) unset($array[$value]);
+		return $array;
 	}
 
 	/**
