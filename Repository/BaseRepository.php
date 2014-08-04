@@ -52,11 +52,11 @@ class BaseRepository extends EntityRepository {
 
 	/**
 	 * @param QueryBuilder $query
-	 * @param array $orders
+	 * @param array $sorting
 	 */
-	protected function addOrders(QueryBuilder &$query, array $orders) {
-		foreach($orders as $sort => $order) {
-			if(in_array($order, array('asc','desc')) && !empty($sort)) {
+	protected function addOrders(QueryBuilder &$query, array $sorting) {
+		foreach($sorting as $sort => $order) {
+			if(in_array(strtoupper($order), array('ASC','DESC')) && !empty($sort)) {
 				$query->addOrderBy($sort, $order);
 			}
 		}
