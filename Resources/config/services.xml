@@ -3,6 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 	<parameters>
+		<parameter key="recognize_extra.routing.service.class">Recognize\ExtraBundle\Service\RoutingService</parameter>
 		<parameter key="recognize_extra.exception.listener.class">Recognize\ExtraBundle\EventListener\ExceptionListener</parameter>
 		<parameter key="recognize_extra.json.annotation.listener.class">Recognize\ExtraBundle\EventListener\JSONAnnotationListener</parameter>
 		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
@@ -10,6 +11,9 @@
 	<services>
 		<service id="recognize_extra.exception.listener" class="%recognize_extra.exception.listener.class%">
 			<tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+		</service>
+		<service id="recognize_extra.routing.service" class="%recognize_extra.routing.service.class%">
+			<argument type="service" id="router"/>
 		</service>
 		<service id="recognize_extra.json.annotation.listener" class="%recognize_extra.json.annotation.listener.class%">
 			<tag name="kernel.event_subscriber" />
