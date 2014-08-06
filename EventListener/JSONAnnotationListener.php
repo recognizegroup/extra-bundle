@@ -5,7 +5,8 @@ namespace Recognize\ExtraBundle\EventListener;
 use Doctrine\Common\Annotations\FileCacheReader,
 	Doctrine\Common\Util\ClassUtils;
 
-use Symfony\Component\HttpKernel\KernelEvents,
+use Symfony\Component\HttpFoundation\Response,
+	Symfony\Component\HttpKernel\KernelEvents,
 	Symfony\Component\HttpKernel\Event\FilterControllerEvent,
 	Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
 	Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -61,7 +62,14 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	 */
 	public function onKernelView(GetResponseForControllerResultEvent $event) {
 		if (!$event->getRequest()->attributes->get('_json_response')) return;
-		$event->setResponse(new JsonResponse($event->getControllerResult()));
+		$controllerData = $event->getControllerResult();
+		$jsonResponse = new JsonResponse();
+		if(array_key_exists('http_status_code', $controllerData)) {
+			$jsonResponse->setStatusCode($controllerData['http_status_code']);
+			unset($controllerData['http_status_code']); // Remove from response
+		}
+		$jsonResponse->setData($controllerData);
+		$event->setResponse($jsonResponse);
 	}
 
 	/**
