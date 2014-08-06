@@ -16,9 +16,10 @@ class FormUtilities {
 	/**
 	 * @param Form $form
 	 * @param $error
+	 * @throws \Exception
 	 */
-	public static function addFromError(Form $form, $error) {
-		if(!is_string($error)) throw new \Exception('Unable to add error to form, type of error has to be string', Response::HTTP_I_AM_A_TEAPOT);
+	public static function addFromError(Form &$form, $error) {
+		if(!is_string($error)) throw new \Exception('Unable to add error to form, type of error has to be string', Response::HTTP_PRECONDITION_FAILED);
 		$form->addError(new FormError($error));
 	}
 
