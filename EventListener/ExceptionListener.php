@@ -29,7 +29,7 @@ class ExceptionListener {
 	 * @param GetResponseForExceptionEvent $event
 	 */
 	public function onKernelException(GetResponseForExceptionEvent $event) {
-		if(0 === strpos($event->getRequest()->headers->get('Content-Type'), 'application/json')) {
+		if(0 === strpos($event->getRequest()->headers->get('Accept'), 'application/json')) {
 			$exception = $event->getException(); // Exception
 
 			$jsonResponse = new JsonResponse();

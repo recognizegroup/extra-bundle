@@ -104,6 +104,15 @@ class DoctrineService {
 	}
 
 	/**
+	 * @param $entity
+	 * @param bool $flush
+	 */
+	public function persistEntity($entity, $flush = true) {
+		$this->registry->getManager()->persist($entity);
+		if($flush) $this->doFlush();
+	}
+
+	/**
 	 * Triggers doctrine flush
 	 */
 	public function doFlush() {
