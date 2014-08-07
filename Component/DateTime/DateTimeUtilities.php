@@ -16,4 +16,16 @@ class DateTimeUtilities {
 		return $dateTime;
 	}
 
+	/**
+	 * @param $format
+	 * @param null $timestamp
+	 * @return \DateTime
+	 */
+	public static function getFormattedDateTime($format, $timestamp = null) {
+		$dateTime = new \DateTime();
+		if(!empty($timestamp)) $dateTime->setTimestamp($timestamp);
+		$dateTime->format($format);
+		return $dateTime;
+	}
+
 }
