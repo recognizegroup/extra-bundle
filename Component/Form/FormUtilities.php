@@ -29,9 +29,13 @@ class FormUtilities {
 	 */
 	public static function errorsToArray(Form $form) {
 		$errors = array();
-		foreach($form->getErrors() as $error) {
+		foreach($form->getErrors(true) as $error) {
 			/** @var \Symfony\Component\Form\FormError $error */
-			$errors[] = $error->getMessage();
+			/** @var \Symfony\Component\Validator\ConstraintViolation $cause */
+			if($cause = $error->getCause()) {
+				$key = $cause->getPropertyPath();
+				$errors[$key] = $error->getMessage();
+			} else $errors[] = $error->getMessage();
 		}
 		return $errors;
 	}
