@@ -10,7 +10,7 @@
 	</parameters>
 	<services>
 		<service id="recognize_extra.exception.listener" class="%recognize_extra.exception.listener.class%">
-			<tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+			<tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="1000" />
 		</service>
 		<service id="recognize_extra.routing.service" class="%recognize_extra.routing.service.class%">
 			<argument type="service" id="router"/>
