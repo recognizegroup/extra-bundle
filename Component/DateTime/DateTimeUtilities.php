@@ -79,7 +79,7 @@ class DateTimeUtilities {
 	 * @return int
 	 * @throws \Exception
 	 */
-	public static function toUnixTimeStamp($timestamp) {
+	public static function toMillisecondsTimeStamp($timestamp) {
 		$timestamp = ($timestamp * 1000);
 		if(self::isValidTimeStamp($timestamp)) {
 			return $timestamp;
@@ -102,14 +102,15 @@ class DateTimeUtilities {
 	/**
 	 * @param int $timestamp
 	 * @param int $offset
-	 * @return int
+	 * @param bool $unix
 	 * @throws \Exception
+	 * @return int
 	 */
-	public static function getTimeStampOffset($timestamp, $offset) {
+	public static function getTimeStampOffset($timestamp, $offset, $unix = false) {
 		if(self::isValidTimeStamp($timestamp)) {
 			$offsetTimestamp = ($timestamp + (86400 * $offset));
 			if(self::isValidTimeStamp($offsetTimestamp)) {
-				return $offsetTimestamp;
+				return ($unix) ? self::toMillisecondsTimeStamp($offsetTimestamp) : $offsetTimestamp;
 			} else throw new \Exception(self::getError('invalid.outcome.timestamp', $offsetTimestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 		} else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 	}
@@ -117,14 +118,15 @@ class DateTimeUtilities {
 	/**
 	 * @param int $timestamp
 	 * @param int $repeat
-	 * @return array
+	 * @param bool $unix
 	 * @throws \Exception
+	 * @return array
 	 */
-	public static function getTimeStampOffsets($timestamp, $repeat = 1) {
+	public static function getTimeStampOffsets($timestamp, $repeat = 1, $unix = false) {
 		if(self::isValidTimeStamp($timestamp)) {
 			$timestamps = array();
 			for($i = 0; $i < $repeat; $i++) {
-				$timestamps[] = self::getTimeStampOffset($timestamp, $i);
+				$timestamps[] = self::getTimeStampOffset($timestamp, $i, $unix);
 			}
 			return $timestamps;
 		} else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -132,12 +134,13 @@ class DateTimeUtilities {
 
 	/**
 	 * @param array $timestamps
+	 * @param bool $unix
 	 * @return array
 	 */
-	public static function getTimeStampsWeekendFlags(array $timestamps) {
+	public static function getTimeStampsWeekendFlags(array $timestamps, $unix = false) {
 		$weekendFlagged = array();
 		foreach($timestamps as $timestamp) {
-			$weekendFlagged[] = array('timestamp' => $timestamp, 'weekend' => self::isWeekend($timestamp));
+			$weekendFlagged[] = array('timestamp' => (($unix) ? self::toMillisecondsTimeStamp($timestamp) : $timestamp), 'weekend' => self::isWeekend($timestamp));
 		}
 		return $weekendFlagged;
 	}
