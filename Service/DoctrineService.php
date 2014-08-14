@@ -87,11 +87,12 @@ class DoctrineService {
 
 	/**
 	 * @param $entity
+	 * @param bool $flush
 	 * @throws \Exception
 	 */
-	public function doRemove($entity) {
+	public function doRemove($entity, $flush = true) {
 		if(!$this->isEntity($entity)) throw new \Exception('Unable to remove entity, object is not an valid entity');
-		$this->removeEntity($entity);
+		$this->removeEntity($entity, $flush);
 	}
 
 	/**
