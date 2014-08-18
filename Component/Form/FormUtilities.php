@@ -40,4 +40,12 @@ class FormUtilities {
 		return $errors;
 	}
 
+	/**
+	 * @param Form $form
+	 * @return int
+	 */
+	public static function hasErrors(Form $form) {
+		return (sizeof($form->getErrors(true)));
+	}
+
 }
