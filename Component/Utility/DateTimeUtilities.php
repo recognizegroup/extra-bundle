@@ -1,9 +1,14 @@
 <?php
 
-namespace Recognize\ExtraBundle\Component\DateTime;
+namespace Recognize\ExtraBundle\Utility;
 
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class DateTimeUtilities
+ * @package Recognize\ExtraBundle\Component\DateTime
+ * @author Nick Obermeijer <n.obermeijer@recognize.nl>
+ */
 class DateTimeUtilities {
 
 	/**
