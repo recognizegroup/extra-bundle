@@ -2,12 +2,32 @@
 
 namespace Recognize\ExtraBundle\Utility;
 
+use Symfony\Component\Serializer\Encoder\JsonEncoder,
+	Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+
 /**
  * Class ArrayUtilities
  * @package Recognize\ExtraBundle\Utility
  * @author Nick Obermeijer <n.obermeijer@recognize.nl>
  */
 class ArrayUtilities {
+
+	/**
+	 * @param array $data
+	 * @param object|string $class
+	 * @throws \Exception
+	 * @return object
+	 */
+	public static function getAsObject(array $data, $class) {
+		if($jsonData = json_encode($data)) {
+			$normalizer = new GetSetMethodNormalizer();
+			$normalizer->setCamelizedAttributes(array_keys($data));
+			$serializer = new Serializer(array($normalizer), array(new JsonEncoder()));
+			return $serializer->deserialize($jsonData, ((is_object($class)) ? get_class($class) : $class), 'json');
+		}
+		throw new \Exception('Failed to convert array to json');
+	}
 
 	/**
 	 * @param array $array
