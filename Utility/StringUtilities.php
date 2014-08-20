@@ -11,16 +11,17 @@ class StringUtilities {
 
 	/**
 	 * @param string $input
-	 * @param string $seperator
+	 * @param string $delimiter
 	 * @return string
 	 */
-	public static function getUrlSlug($input, $seperator = '-') {
-		$input = preg_replace('~\'s(\s|\z)~', 's$1', $input);
-		$input = preg_replace('~[^\\pL\d]+~u', $seperator, $input);
-		$input = trim($input, $seperator);
-		if (function_exists('iconv')) { // Handle some translations
-			$input = iconv('utf-8', 'us-ascii//TRANSLIT', $input);
+	public static function getUrlSlug($input, $delimiter = '-') {
+		setlocale(LC_ALL, 'en_US.UTF8');
+		if (function_exists('iconv')) { // Check if method exists
+			$input = iconv('UTF-8', 'ASCII//TRANSLIT', $input);
 		}
+		$input = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $input);
+		$input = strtolower(trim($input, '-'));
+		$input = preg_replace("/[\/_|+ -]+/", $delimiter, $input);
 		return strtolower($input);
 	}
 
