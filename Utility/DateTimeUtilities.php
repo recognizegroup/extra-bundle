@@ -56,7 +56,7 @@ class DateTimeUtilities {
 	 * @return \DateTime
 	 */
 	public static function getModifiedDateTime($modification, $timestamp = null) {
-		if(self::isValidTimeStamp($timestamp)) {
+		if(!$timestamp || self::isValidTimeStamp($timestamp)) {
 			$dateTime = new \DateTime();
 			if(!empty($timestamp)) $dateTime->setTimestamp($timestamp);
 			$dateTime->modify($modification);

@@ -2,6 +2,7 @@
 
 namespace Recognize\ExtraBundle\Twig\Extension;
 
+use Recognize\ExtraBundle\Utility\StringUtilities;
 use Symfony\Bridge\Doctrine\RegistryInterface,
 	Symfony\Component\HttpFoundation\RequestStack;
 
@@ -65,7 +66,8 @@ class ExtraExtension extends \Twig_Extension {
 	public function getFilters() {
 		return array(
 			'query_string' => new \Twig_Filter_Method($this, 'getQueryString'),
-			'unset' => new \Twig_Filter_Method($this, 'unsetValue')
+			'unset' => new \Twig_Filter_Method($this, 'unsetValue'),
+			'url_slug' => new \Twig_Filter_Method($this, 'getUrlSlug')
 		);
 	}
 
@@ -77,6 +79,14 @@ class ExtraExtension extends \Twig_Extension {
 	public function unsetValue(array $array, $value) {
 		if(isset($array[$value])) unset($array[$value]);
 		return $array;
+	}
+
+	/**
+	 * @param string $string
+	 * @return string
+	 */
+	public function getUrlSlug($string) {
+		return (is_string($string)) ? StringUtilities::getUrlSlug($string) : $string;
 	}
 
 	/**
