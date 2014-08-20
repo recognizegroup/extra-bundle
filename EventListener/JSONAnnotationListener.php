@@ -65,7 +65,8 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 		$controllerData = $event->getControllerResult();
 		$jsonResponse = new JsonResponse();
 		if(array_key_exists('http_status_code', $controllerData)) {
-			$jsonResponse->setStatusCode($controllerData['http_status_code']);
+			$code = $controllerData['http_status_code'];
+			$jsonResponse->setStatusCode(($code != 0) ? $code : Response::HTTP_INTERNAL_SERVER_ERROR);
 			unset($controllerData['http_status_code']); // Remove from response
 		}
 		$jsonResponse->setData($controllerData);
