@@ -18,12 +18,18 @@ class DoctrineService {
 	 */
 	protected $registry;
 
+	/**
+	 * @var \Recognize\ExtraBundle\Repository\SettingRepository
+	 */
+	protected $settingRepository;
+
 
 	/**
 	 * @param RegistryInterface $registry
 	 */
 	public function __construct(RegistryInterface $registry) {
 		$this->registry = $registry;
+		$this->settingRepository = $registry->getRepository('RecognizeExtraBundle:Setting');
 	}
 
 	/**

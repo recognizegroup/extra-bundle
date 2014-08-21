@@ -99,7 +99,7 @@ class BaseRepository extends EntityRepository {
 	 * @param string $field
 	 * @return array
 	 */
-	public function getEntitiesByArray(Array $collection, $field) {
+	public function getEntitiesByArray(Array $collection, $field = 'id') {
 		return $this->createQueryBuilder('entity')
 			->where($this->qb->expr()->in(sprintf('entity.%s', $field), $this->getEscapedCollection($collection)))
 			->getQuery()->getResult();
