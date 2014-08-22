@@ -60,4 +60,23 @@ class ArrayUtilities {
 		return null;
 	}
 
+	/**
+	 * @param array $haystack
+	 * @param array $keys
+	 * @param bool $deep
+	 */
+	public static function unsetColumnsByKeys(array &$haystack, array $keys, $deep = false) {
+		foreach($haystack as &$item) {
+			if($deep && is_array($item)) {
+				self::unsetColumnsByKeys($item, $keys, $deep);
+			} else {
+				foreach($keys as $key) {
+					if(array_key_exists($key, $haystack)) {
+						unset($haystack[$key]);
+					}
+				}
+			}
+		}
+	}
+
 }
