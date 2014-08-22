@@ -1,0 +1,26 @@
+{% macro active(routes, params, append, class) %}
+	{% spaceless %}
+		{% if routes is defined and routes is not empty %}
+			{% set currentRoute = app.request.attributes.get('_route') %}
+			{% set queryParams = app.request.query.all %}
+			{% set params = ((params is defined and params is iterable) ? params : ((params == true) ? true : false)) %}
+			{% set append = ((append is defined) ? ((append == false) ? true : false) :  false) %}
+			{% set class = ((class is defined and class == true) ? true : false) %}
+			{% if (routes is not iterable and currentRoute == routes) or (routes is iterable and currentRoute in routes) %}
+				{% set isValid = ((params is iterable) ? false : ((queryParams|length and params) ? false : true)) %}
+				{% if not isValid and queryParams|length %}
+					{% for param in params %}
+						{% if not isValid and param in queryParams %}
+							{% set isValid = true %}
+						{% elseif param not in queryParams %}
+							{% set isValid = false %}
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+				{% if isValid %}
+					{{ (((append) ? ' ' : '') ~ ((class) ? 'class="active"' : 'active'))|raw }}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	{% endspaceless %}
+{% endmacro %}

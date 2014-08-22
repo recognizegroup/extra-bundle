@@ -2,7 +2,8 @@
 
 namespace Recognize\ExtraBundle\Service;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Connection,
+	Doctrine\DBAL\Query\QueryBuilder;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -23,6 +24,11 @@ class DoctrineService {
 	 */
 	protected $settingRepository;
 
+	/**
+	 * @var \Doctrine\ORM\QueryBuilder
+	 */
+	protected $qb;
+
 
 	/**
 	 * @param RegistryInterface $registry
@@ -30,6 +36,7 @@ class DoctrineService {
 	public function __construct(RegistryInterface $registry) {
 		$this->registry = $registry;
 		$this->settingRepository = $registry->getRepository('RecognizeExtraBundle:Setting');
+		$this->qb = new QueryBuilder($this->getConnection());
 	}
 
 	/**
@@ -37,6 +44,14 @@ class DoctrineService {
 	 */
 	public function getConnection() {
 		return $this->registry->getConnection();
+	}
+
+	/**
+	 * @param $value
+	 * @return int|string
+	 */
+	protected function getExpressionValue($value) {
+		return (!is_numeric($value)) ? $this->qb->expr()->literal("%$value%") : $value;
 	}
 
 	/**
