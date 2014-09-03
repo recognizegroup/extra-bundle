@@ -13,30 +13,28 @@
 			{% set offSet = offSet - (((page + center) - pages) - 1) %}
 		{% endif %}
 	{% endif %}
-	<div class="pagination">
-		<ul>
-			<li{% if page == 1 %} class="disabled"{% endif %}>
-				<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: 1, limit: limit }) ) }}{{ qString }}" title="Eerste pagina">&laquo;</a>
+	<ul class="pagination">
+		<li{% if page == 1 %} class="disabled"{% endif %}>
+			<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: 1, limit: limit }) ) }}{{ qString }}" title="Eerste pagina">&laquo;</a>
+		</li>
+		<li{% if page == 1 %} class="disabled"{% endif %}>
+			<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: ((page != 1) ? (page - 1) : (page)), limit: limit }) ) }}{{ qString }}" title="Vorige pagina">Vorige</a>
+		</li>
+		{% for i in (1 + offSet)..(maxPages + offSet) %}
+			<li{% if page == i %} class="disabled"{% endif %}>
+				<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: i, limit: limit }) ) }}{{ qString }}" title="Pagina {{ i }}">
+					{{ i }}
+				</a>
 			</li>
-			<li{% if page == 1 %} class="disabled"{% endif %}>
-				<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: page, limit: limit }) ) }}{{ qString }}" title="Vorige pagina">Vorige</a>
-			</li>
-			{% for i in (1 + offSet)..(maxPages + offSet) %}
-				<li{% if page == i %} class="disabled"{% endif %}>
-					<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: i, limit: limit }) ) }}{{ qString }}" title="Pagina {{ i }}">
-						{{ i }}
-					</a>
-				</li>
-			{% endfor %}
-			<li{% if (page == pages) %} class="disabled"{% endif %}>
-				<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: ((page == pages) ? page : (page + 1)), limit: limit }) ) }}{{ qString }}" title="Volgende pagina">Volgende</a>
-			</li>
-			<li{% if (page == pages) %} class="disabled"{% endif %}>
-				<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: pages, limit: limit }) ) }}{{ qString }}" title="Laatste pagina">&raquo;</a>
-			</li>
-			<li>
-				<small style="padding-left: 4px; line-height: 34px;">&nbsp;Rijen {{ (page * limit)- limit + 1 }} tot {% if page == pages %}{{ (pages * limit) - ((pages * limit) - (total)) }}{% else %}{{ (page * limit) }}{% endif %} van {{ total }}</small>
-			</li>
-		</ul>
-	</div>
+		{% endfor %}
+		<li{% if (page == pages) %} class="disabled"{% endif %}>
+			<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: ((page == pages) ? page : (page + 1)), limit: limit }) ) }}{{ qString }}" title="Volgende pagina">Volgende</a>
+		</li>
+		<li{% if (page == pages) %} class="disabled"{% endif %}>
+			<a href="{{ path(app.request.get('_route'), routeParams|merge({ offset: pages, limit: limit }) ) }}{{ qString }}" title="Laatste pagina">&raquo;</a>
+		</li>
+		<li>
+			<small style="padding-left: 4px; line-height: 34px;">&nbsp;Rijen {{ (page * limit)- limit + 1 }} tot {% if page == pages %}{{ (pages * limit) - ((pages * limit) - (total)) }}{% else %}{{ (page * limit) }}{% endif %} van {{ total }}</small>
+		</li>
+	</ul>
 {% endif %}
