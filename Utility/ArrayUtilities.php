@@ -61,6 +61,24 @@ class ArrayUtilities {
 	}
 
 	/**
+	 * @param array $array
+	 * @param string $column
+	 * @param array $values
+	 * @param bool $nested
+	 * @return array
+	 */
+	public static function getColumnValues(array $array, $column, array &$values = array(), $nested = true) {
+		foreach($array as $key => $item) {
+			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
+				$values[] = $item;
+			} elseif($nested && is_array($item)) {
+				self::getColumnValues($item, $column, $values, $nested);
+			}
+		}
+		return $values;
+	}
+
+	/**
 	 * @param array $haystack
 	 * @param array $keys
 	 * @param bool $deep
