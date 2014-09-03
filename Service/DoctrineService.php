@@ -5,6 +5,7 @@ namespace Recognize\ExtraBundle\Service;
 use Doctrine\DBAL\Connection,
 	Doctrine\DBAL\Query\QueryBuilder;
 
+use Recognize\ExtraBundle\Utility\ArrayUtilities;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -28,6 +29,16 @@ class DoctrineService {
 	 * @var \Doctrine\ORM\QueryBuilder
 	 */
 	protected $qb;
+
+	/**
+	 * @var array
+	 */
+	protected $orderByFields = array();
+
+	/**
+	 * @var bool
+	 */
+	protected $transaction = false;
 
 
 	/**
@@ -67,24 +78,36 @@ class DoctrineService {
 	}
 
 	/**
+	 * Creates array to determine query's orderBy, currently supports one order clause
+	 * TODO: Add support for multiple order fields
+	 * @param $field
+	 * @param string $order
+	 * @return array
+	 */
+	public function getOrderBy($field, $order = 'ASC') {
+		return (array_key_exists($field, $this->orderByFields) && in_array(strtoupper($order), array('ASC','DESC'))) ?
+			array($this->orderByFields[$field] => $order) : array();
+	}
+
+	/**
 	 * Starts transaction mode
 	 */
 	public function transactionStart() {
-		$this->getConnection()->beginTransaction();
+		if(!$this->transaction) $this->getConnection()->beginTransaction();
 	}
 
 	/**
 	 * Finish transaction
 	 */
 	public function transactionCommit() {
-		$this->getConnection()->commit();
+		if($this->transaction) $this->getConnection()->commit();
 	}
 
 	/**
 	 * Rollback changes
 	 */
 	public function transactionRollback() {
-		$this->getConnection()->rollback();
+		if($this->transaction) $this->getConnection()->rollback();
 	}
 
 	/**
