@@ -199,4 +199,14 @@ class DateTimeUtilities {
 		else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param $timestamp
+	 * @return \DateTime
+	 */
+	public static function getDateTimeFromTimeStamp($timestamp) {
+		$dateTime = new \DateTime();
+		$dateTime->setTimestamp($timestamp);
+		return $dateTime;
+	}
+
 }
