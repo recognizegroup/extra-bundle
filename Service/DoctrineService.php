@@ -93,21 +93,30 @@ class DoctrineService {
 	 * Starts transaction mode
 	 */
 	public function transactionStart() {
-		if(!$this->transaction) $this->getConnection()->beginTransaction();
+		if(!$this->transaction){
+			$this->getConnection()->beginTransaction();
+			$this->transaction = true;
+		}
 	}
 
 	/**
 	 * Finish transaction
 	 */
 	public function transactionCommit() {
-		if($this->transaction) $this->getConnection()->commit();
+		if($this->transaction) {
+			$this->getConnection()->commit();
+			$this->transaction = false;
+		}
 	}
 
 	/**
 	 * Rollback changes
 	 */
 	public function transactionRollback() {
-		if($this->transaction) $this->getConnection()->rollback();
+		if($this->transaction) {
+			$this->getConnection()->rollback();
+			$this->transaction = false;
+		}
 	}
 
 	/**
