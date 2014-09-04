@@ -69,7 +69,7 @@ class BaseRepository extends EntityRepository {
 	 */
 	public function addFilter(QueryBuilder &$query, $filter) {
 		if(!is_null($filter)) { // When set
-			if($filter instanceof Expr\Andx) $query->andWhere($filter);
+			if($filter instanceof Expr\Andx || $filter instanceof Expr\Comparison) $query->andWhere($filter);
 			elseif($filter instanceof HavingClause) $query->having($filter->conditionalExpression);
 			else throw new \Exception('Unsupported filter supplied; Expr\Andx and HavingClause are supported');
 		}

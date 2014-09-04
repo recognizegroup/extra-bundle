@@ -82,11 +82,12 @@ class DoctrineService {
 	 * TODO: Add support for multiple order fields
 	 * @param $field
 	 * @param string $order
+	 * @param array $default
 	 * @return array
 	 */
-	public function getOrderBy($field, $order = 'ASC') {
+	public function getOrderBy($field, $order = 'ASC', array $default = array()) {
 		return (array_key_exists($field, $this->orderByFields) && in_array(strtoupper($order), array('ASC','DESC'))) ?
-			array($this->orderByFields[$field] => $order) : array();
+			array($this->orderByFields[$field] => $order) : $default;
 	}
 
 	/**
