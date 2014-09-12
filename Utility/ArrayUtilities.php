@@ -102,6 +102,13 @@ class ArrayUtilities {
 	 * @param array $key
 	 * @param function $func
 	 * @param bool $deep
+	 * 
+	 * @example
+	 * In this example we search for all fields with the name 'image_paths' and explode the value (we know it is a comma delimited string) into an array.
+	 * 
+	 * ArrayUtilities::funcColumnByKey($data, 'image_paths', function($value) {
+	 * 		return explode(',', $value);
+	 * }, true);
 	 */
 	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = true) {
 		foreach($haystack as $key => &$item) {
