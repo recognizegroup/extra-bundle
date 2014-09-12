@@ -101,7 +101,7 @@ class ArrayUtilities {
 	 * @param array $haystack
 	 * @param array $key
 	 * @param function $func
-	 * @param bool $deep
+	 * @param bool $nested
 	 * 
 	 * @example
 	 * In this example we search for all fields with the name 'image_paths' and explode the value (we know it is a comma delimited string) into an array.
@@ -110,7 +110,7 @@ class ArrayUtilities {
 	 * 		return explode(',', $value);
 	 * }, true);
 	 */
-	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = true) {
+	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = false) {
 		foreach($haystack as $key => &$item) {
 			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
 				if (is_callable($func)) $haystack[$key] = call_user_func($func, $item);
