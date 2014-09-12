@@ -68,15 +68,20 @@ class DateTimeUtilities {
 	 * @param $format
 	 * @param null $timestamp
 	 * @throws \Exception
-	 * @return \DateTime
+	 * @return string
 	 */
 	public static function getFormattedDateTime($format, $timestamp = null) {
-		if(self::isValidTimeStamp($timestamp)) {
-			$dateTime = new \DateTime();
-			if(!empty($timestamp)) $dateTime->setTimestamp($timestamp);
-			$dateTime->format($format);
-			return $dateTime;
-		} else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
+		if(!is_null($timestamp) && self::isValidTimeStamp($timestamp)) { // Validate if required
+			throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
+		}
+		$dateTime = new \DateTime('now');
+		if(!empty($timestamp)) $dateTime->setTimestamp($timestamp);
+		return $dateTime->format($format);
+	}
+
+
+	public static function getMilliseconds() {
+
 	}
 
 	/**
