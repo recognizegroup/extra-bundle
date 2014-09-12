@@ -96,5 +96,21 @@ class ArrayUtilities {
 			}
 		}
 	}
+	
+	/**
+	 * @param array $haystack
+	 * @param array $key
+	 * @param function $func
+	 * @param bool $deep
+	 */
+	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = true) {
+		foreach($haystack as $key => &$item) {
+			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
+				if (is_callable($func)) $haystack[$key] = call_user_func($func, $item);
+			} elseif($nested && is_array($item)) {
+				self::funcColumnByKey($item, $column, $func, $nested);
+			}
+		}
+	}
 
 }
