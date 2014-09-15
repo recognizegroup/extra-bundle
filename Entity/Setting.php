@@ -30,7 +30,7 @@ class Setting {
 	protected $fk_setting_id;
 
 	/**
-	 * @ORM\Column(type="string", length=25)
+	 * @ORM\Column(type="string", length=75)
 	 */
 	protected $key;
 

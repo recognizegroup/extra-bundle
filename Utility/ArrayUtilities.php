@@ -96,18 +96,17 @@ class ArrayUtilities {
 			}
 		}
 	}
-	
+
 	/**
 	 * @param array $haystack
-	 * @param array $key
-	 * @param function $func
+	 * @param $column
+	 * @param callback $func
 	 * @param bool $nested
-	 * 
 	 * @example
 	 * In this example we search for all fields with the name 'image_paths' and explode the value (we know it is a comma delimited string) into an array.
-	 * 
+	 *
 	 * ArrayUtilities::funcColumnByKey($data, 'image_paths', function($value) {
-	 * 		return explode(',', $value);
+	 *        return explode(',', $value);
 	 * }, true);
 	 */
 	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = false) {
