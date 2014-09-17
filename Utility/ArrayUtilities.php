@@ -122,18 +122,18 @@ class ArrayUtilities {
 	 * @param array $array
 	 * @param string $column
 	 * @param array $values
-	 * @param bool $nested
+	 * @param bool $deep
 	 * @param bool $unique
 	 * @return array
 	 */
-	public static function getColumnValues(array $array, $column, $nested = true, $unique = false, array &$values = array()) {
+	public static function getColumnValues(array $array, $column, $deep = true, $unique = false, array &$values = array()) {
 		foreach($array as $key => $item) {
-			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
+			if($key == $column && (!is_array($item) || is_array($item) && !$deep)) {
 				if($unique && !in_array($item, $values)) {
 					$values[] = $item;
 				} elseif(!$unique) $values[] = $item;
-			} elseif($nested && is_array($item)) {
-				self::getColumnValues($item, $column, $nested, $unique, $values);
+			} elseif($deep && is_array($item)) {
+				self::getColumnValues($item, $column, $deep, $unique, $values);
 			}
 		}
 		return $values;
@@ -172,7 +172,7 @@ class ArrayUtilities {
 	 */
 	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = false) {
 		foreach($haystack as $key => &$item) {
-			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
+			if($key === $column && (!is_array($item) || is_array($item) && !$nested)) {
 				if (is_callable($func)) $haystack[$key] = call_user_func($func, $item);
 			} elseif($nested && is_array($item)) {
 				self::funcColumnByKey($item, $column, $func, $nested);
