@@ -7,6 +7,7 @@
 		<parameter key="recognize_extra.exception.listener.class">Recognize\ExtraBundle\EventListener\ExceptionListener</parameter>
 		<parameter key="recognize_extra.json.annotation.listener.class">Recognize\ExtraBundle\EventListener\JSONAnnotationListener</parameter>
 		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
+		<parameter key="recognize_extra.csv.service.class">Recognize\ExtraBundle\Service\CsvService</parameter>
 	</parameters>
 	<services>
 		<service id="recognize_extra.exception.listener" class="%recognize_extra.exception.listener.class%">
@@ -24,5 +25,6 @@
 			<argument type="service" id="request_stack" />
 			<argument type="service" id="doctrine"/>
 		</service>
+		<service id="recognize_extra.csv.service" class="%recognize_extra.csv.service.class%" />
 	</services>
 </container>

@@ -32,32 +32,90 @@ class ArrayUtilities {
 	/**
 	 * @param array $array
 	 * @param string $column
-	 * @param mixed $value
-	 * @return array|null
+	 * @param string $value
+	 * @return mixed
+	 */
+	public static function findOneByColumnValue(array $array, $column, $value) {
+		return self::findByColumnValue($array, $column, $value);
+	}
+
+	/**
+	 * @param array $array
+	 * @param $column
+	 * @param $value
+	 * @return mixed
 	 */
 	public static function findAllByColumnValue(array $array, $column, $value) {
+		return self::findByColumnValue($array, $column, $value, true);
+	}
+
+
+	/**
+	 * @param array $array
+	 * @param string $column
+	 * @param string $value
+	 * @param bool $multiple
+	 * @throws \Exception
+	 * @return mixed
+	 */
+	private static function findByColumnValue(array $array, $column, $value, $multiple = false) {
 		$results = array();
 		foreach($array as $element) {
 			if(is_array($element) && array_key_exists($column, $element) && $element[$column] == $value) {
 				$results[] = $element;
 			}
 		}
-		return (!empty($results)) ? $results : null;
+		if(!$multiple && sizeof($results) > 1) throw new \Exception('Array contains more than one result matching criteria');
+		return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
 	}
 
 	/**
 	 * @param array $array
-	 * @param string $column
-	 * @param string $value
-	 * @throws \Exception
-	 * @return mixed
+	 * @param array $values
+	 * @param bool $deep
+	 * @return array
 	 */
-	public static function findByColumnValue(array $array, $column, $value) {
-		if($results = self::findAllByColumnValue($array, $column, $value)) {
-			if(sizeof($results) > 1) throw new \Exception('Array contains more than one result matching criteria');
-			return array_shift($results);
+	public static function findAllByColumnsValues(array $array, array $values, $deep = false) {
+		return self::findByColumnsValues($array, $values, $deep, true);
+	}
+
+	/**
+	 * @param array $array
+	 * @param array $values
+	 * @param bool $deep
+	 * @return array
+	 */
+	public static function findOneByColumnsValues(array $array, array $values, $deep = false) {
+		return self::findByColumnsValues($array, $values, $deep);
+	}
+
+	/**
+	 * @param array $array
+	 * @param array $values
+	 * @param bool $deep
+	 * @param bool $multiple
+	 * @throws \Exception
+	 * @return array
+	 */
+	private static function findByColumnsValues(array $array, array $values, $deep = false, $multiple = false) {
+		$results = array();
+		if($deep) { // When deep
+			foreach($array as $value) {
+				if(is_array($value)) { // Head deeper when it's an array
+					if($result = self::findByColumnsValues($value, $values, $deep)) {
+						$results[] = $result;
+					}
+				}
+			}
 		}
-		return null;
+
+		$intersected = @array_intersect($array, $values);
+		if(sizeof(array_diff($values, $intersected)) == 0) {
+			$results[] = $array;
+		}
+
+		if(!$multiple && sizeof($results) > 1) throw new \Exception('Array contains more than one result matching criteria');
+		return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
 	}
 
 	/**
@@ -65,14 +123,17 @@ class ArrayUtilities {
 	 * @param string $column
 	 * @param array $values
 	 * @param bool $nested
+	 * @param bool $unique
 	 * @return array
 	 */
-	public static function getColumnValues(array $array, $column, array &$values = array(), $nested = true) {
+	public static function getColumnValues(array $array, $column, $nested = true, $unique = false, array &$values = array()) {
 		foreach($array as $key => $item) {
 			if($key == $column && (!is_array($item) || is_array($item) && !$nested)) {
-				$values[] = $item;
+				if($unique && !in_array($item, $values)) {
+					$values[] = $item;
+				} elseif(!$unique) $values[] = $item;
 			} elseif($nested && is_array($item)) {
-				self::getColumnValues($item, $column, $values, $nested);
+				self::getColumnValues($item, $column, $nested, $unique, $values);
 			}
 		}
 		return $values;
