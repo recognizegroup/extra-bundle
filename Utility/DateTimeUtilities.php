@@ -120,8 +120,7 @@ class DateTimeUtilities {
 	 * @return \DateInterval
 	 */
 	public static function getTimeStampDiff($timestamp1, $timestamp2) {
-		if($timestamp1 > $timestamp2) return self::getDateTimeFromTimeStamp($timestamp1)->diff(self::getDateTimeFromTimeStamp($timestamp2));
-		else return self::getDateTimeFromTimeStamp($timestamp2)->diff(self::getDateTimeFromTimeStamp($timestamp1));
+		return self::getDateTimeFromTimeStamp($timestamp1)->diff(self::getDateTimeFromTimeStamp($timestamp2));
 	}
 
 	/**
