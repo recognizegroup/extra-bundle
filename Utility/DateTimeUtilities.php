@@ -18,8 +18,7 @@ class DateTimeUtilities {
 	 * @return bool
 	 */
 	protected static function isValidTimeStamp($timestamp) {
-		$check = (is_int($timestamp) OR is_float($timestamp)) ? $timestamp : (string) (int) $timestamp;
-		return ($check === $timestamp) && ((int) $timestamp <= PHP_INT_MAX) && ((int) $timestamp >= ~PHP_INT_MAX);
+		return ((string) (int) $timestamp === $timestamp) && ($timestamp <= PHP_INT_MAX) && ($timestamp >= ~PHP_INT_MAX);
 	}
 
 	/**
@@ -50,10 +49,10 @@ class DateTimeUtilities {
 	}
 
 	/**
-	 * @param $modification
+	 * @param string $modification
 	 * @param null $timestamp
-	 * @throws \Exception
 	 * @return \DateTime
+	 * @throws \Exception
 	 */
 	public static function getModifiedDateTime($modification, $timestamp = null) {
 		if(!$timestamp || self::isValidTimeStamp($timestamp)) {
@@ -67,21 +66,27 @@ class DateTimeUtilities {
 	/**
 	 * @param $format
 	 * @param null $timestamp
+	 * @param bool $returnValue
 	 * @throws \Exception
 	 * @return string
 	 */
-	public static function getFormattedDateTime($format, $timestamp = null) {
+	public static function getFormattedDateTime($format, $timestamp = null, $returnValue = true) {
 		if(!is_null($timestamp) && self::isValidTimeStamp($timestamp)) { // Validate if required
 			throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
 		$dateTime = new \DateTime('now');
 		if(!empty($timestamp)) $dateTime->setTimestamp($timestamp);
-		return $dateTime->format($format);
+		return ($returnValue) ? $dateTime->format($format) : $dateTime;
 	}
 
-
-	public static function getMilliseconds() {
-
+	/**
+	 * @param $timestamp
+	 * @param string $format
+	 * @return int
+	 */
+	public static function getFormattedTime($timestamp, $format = 'Y-m-d') {
+		$timestamp = !is_int($timestamp) ? strtotime($timestamp) : $timestamp;
+		return strtotime(DateTimeUtilities::getFormattedDateTime($format, $timestamp));
 	}
 
 	/**
@@ -107,6 +112,16 @@ class DateTimeUtilities {
 			return $timestamp;
 		}
 		else throw new \Exception(self::getError('invalid.unix.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
+	}
+
+	/**
+	 * @param int $timestamp1
+	 * @param int $timestamp2
+	 * @return \DateInterval
+	 */
+	public static function getTimeStampDiff($timestamp1, $timestamp2) {
+		if($timestamp1 > $timestamp2) return self::getDateTimeFromTimeStamp($timestamp1)->diff(self::getDateTimeFromTimeStamp($timestamp2));
+		else return self::getDateTimeFromTimeStamp($timestamp2)->diff(self::getDateTimeFromTimeStamp($timestamp1));
 	}
 
 	/**
