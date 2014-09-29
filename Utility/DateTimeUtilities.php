@@ -18,7 +18,7 @@ class DateTimeUtilities {
 	 * @return bool
 	 */
 	protected static function isValidTimeStamp($timestamp) {
-		return ((string) (int) $timestamp === $timestamp) && ($timestamp <= PHP_INT_MAX) && ($timestamp >= ~PHP_INT_MAX);
+		return checkdate(date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
 	}
 
 	/**
