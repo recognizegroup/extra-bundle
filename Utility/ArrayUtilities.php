@@ -141,17 +141,75 @@ class ArrayUtilities {
 
 	/**
 	 * @param array $haystack
-	 * @param array $keys
+	 * @param string|int $key
+	 */
+	public static function unsetByKey(array &$haystack, $key) {
+		if(array_key_exists($key, $haystack)) { // Make sure key exists
+			unset($haystack[$key]);
+		}
+	}
+
+	/**
+	 * @param array $haystack
+	 * @param mixed $value
+	 */
+	public static function unsetByValue(array &$haystack, $value) {
+		if($index = array_search($value, $haystack)) {
+			unset($haystack[$index]);
+		}
+	}
+
+	/**
+	 * @param array $haystack
+	 * @param array|string|int $keys
 	 * @param bool $deep
 	 */
-	public static function unsetColumnsByKeys(array &$haystack, array $keys, $deep = false) {
+	public static function unsetColumnsByKeys(array &$haystack, $keys, $deep = false) {
 		foreach($haystack as &$item) {
 			if($deep && is_array($item)) {
 				self::unsetColumnsByKeys($item, $keys, $deep);
 			} else {
-				foreach($keys as $key) {
+				if(is_array($keys)) { // when array loop over values to unset
+					foreach($keys as $key) {
+						self::unsetByKey($haystack, $key);
+					}
+				} else self::unsetByKey($haystack, $keys);
+			}
+		}
+	}
+
+	/**
+	 * @param array $haystack
+	 * @param array|mixed $values
+	 * @param bool $deep
+	 */
+	public static function unsetColumnsByValue(array &$haystack, $values, $deep = false) {
+		foreach($haystack as &$item) {
+			if($deep && is_array($item)) {
+				self::unsetColumnsByValue($item, $values, $deep);
+			} else {
+				if(is_array($values)) {
+					foreach($values as $value) {
+						self::unsetByValue($haystack, $value);
+					}
+				} else self::unsetByValue($haystack, $values);
+			}
+		}
+	}
+
+	/**
+	 * @param array $haystack
+	 * @param array $replace
+	 * @param bool $deep
+	 */
+	public static function replaceValues(array &$haystack, array $replace, $deep = false) {
+		foreach($haystack as &$item) {
+			if($deep && is_array($item)) {
+				self::replaceValues($item, $replace, $deep);
+			} else {
+				foreach($replace as $key => $replacement) {
 					if(array_key_exists($key, $haystack)) {
-						unset($haystack[$key]);
+						$haystack[$key] = $replacement;
 					}
 				}
 			}
