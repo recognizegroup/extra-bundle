@@ -49,6 +49,21 @@ class ArrayUtilities {
 		return self::findByColumnValue($array, $column, $value, true);
 	}
 
+	/**
+	 * @param array $array
+	 * @param array $columns
+	 * @param $value
+	 * @return array
+	 */
+	public static function findAllByColumnsValue(array $array, array $columns, $value) {
+		$results = array();
+		foreach($columns as $column) {
+			if($result = self::findOneByColumnValue($array, $column, $value)) {
+				$results[] = $result;
+			}
+		}
+		return (!empty($results)) ? $results : null;
+	}
 
 	/**
 	 * @param array $array
@@ -65,7 +80,7 @@ class ArrayUtilities {
 				$results[] = $element;
 			}
 		}
-		if(!$multiple && sizeof($results) > 1) throw new \Exception('Array contains more than one result matching criteria');
+		if(!$multiple && sizeof($results) > 1) throw new \Exception(sprintf('Array contains more than one result matching criteria "%s"', $value));
 		return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
 	}
 
