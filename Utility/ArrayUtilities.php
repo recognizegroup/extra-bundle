@@ -140,6 +140,25 @@ class ArrayUtilities {
 	}
 
 	/**
+	 * @param array $array
+	 * @param array $columns
+	 * @param bool $deep
+	 * @return array
+	 */
+	public static function getColumnsValues(array $array, array $columns, $deep = true) {
+		$results = array();
+		if($deep) { // When deep is set, dive deeper and unset the key from it's collection
+			foreach($array as $key => $item) {
+				if(is_array($item)) {
+					array_merge_recursive($results, self::getColumnsValues($item, $columns, $deep));
+					unset($array[$key]); // Unset after recursive search
+				}
+			}
+		}
+		return array_merge_recursive($results, array_intersect_key($array, array_flip($columns)));
+	}
+
+	/**
 	 * @param array $haystack
 	 * @param string|int $key
 	 */
@@ -208,8 +227,8 @@ class ArrayUtilities {
 				self::replaceValues($item, $replace, $deep);
 			} else {
 				foreach($replace as $key => $replacement) {
-					if(array_key_exists($key, $haystack)) {
-						$haystack[$key] = $replacement;
+					if($index = array_search($key, $haystack)) {
+						$haystack[$index] = $replacement;
 					}
 				}
 			}
