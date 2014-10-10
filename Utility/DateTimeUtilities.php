@@ -95,9 +95,8 @@ class DateTimeUtilities {
 	 * @throws \Exception
 	 */
 	public static function toMillisecondsTimeStamp($timestamp) {
-		$timestamp = ($timestamp * 1000);
 		if(self::isValidTimeStamp($timestamp)) {
-			return $timestamp;
+			return ($timestamp * 1000);
 		} else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 	}
 
