@@ -31,6 +31,31 @@ class ArrayUtilities {
 
 	/**
 	 * @param array $array
+	 * @param array $columns
+	 * @param bool $deep
+	 * @return bool
+	 */
+	public static function hasMatchingKeyColumnValues(array $array, array $columns, $deep = false) {
+		$match = false;
+		foreach($array as $element) { // Loops current array's elements
+			if($deep && is_array($element) && !$match && self::hasMatchingKeyColumnValues($element, $columns, $deep)) { // Go deep!
+				$match = true;
+			} elseif(!$match) {
+				$matches = array();
+				foreach($columns as $column) { // Loop over columns to match
+					if(array_key_exists($column, $array) && (empty($matches) || in_array($array[$column], $matches))) {
+						$matches[] = $array[$column]; // Add value to matches
+					}
+				}
+				$match = (sizeof($matches) == sizeof($columns)); // Did we find all values?
+			}
+			if($match) break; // Stop loop when we've found a match
+		}
+		return $match;
+	}
+
+	/**
+	 * @param array $array
 	 * @param string $column
 	 * @param string $value
 	 * @return mixed
@@ -254,7 +279,7 @@ class ArrayUtilities {
 	 * @param array $haystack
 	 * @param $column
 	 * @param callback $func
-	 * @param bool $nested
+	 * @param bool $deep
 	 * @example
 	 * In this example we search for all fields with the name 'image_paths' and explode the value (we know it is a comma delimited string) into an array.
 	 *
@@ -262,12 +287,12 @@ class ArrayUtilities {
 	 *        return explode(',', $value);
 	 * }, true);
 	 */
-	public static function funcColumnByKey(array &$haystack, $column, $func, $nested = false) {
+	public static function funcColumnByKey(array &$haystack, $column, $func, $deep = false) {
 		foreach($haystack as $key => &$item) {
-			if($key === $column && (!is_array($item) || is_array($item) && !$nested)) {
+			if($key === $column && (!is_array($item) || is_array($item) && !$deep)) {
 				if (is_callable($func)) $haystack[$key] = call_user_func($func, $item);
-			} elseif($nested && is_array($item)) {
-				self::funcColumnByKey($item, $column, $func, $nested);
+			} elseif($deep && is_array($item)) {
+				self::funcColumnByKey($item, $column, $func, $deep);
 			}
 		}
 	}
