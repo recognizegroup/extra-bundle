@@ -130,7 +130,7 @@ class DateTimeUtilities {
 	 */
 	public static function getTimeStampOffset($timestamp, $offset) {
 		if(self::isValidTimeStamp($timestamp)) {
-			$offsetTimestamp = ($timestamp + (86400 * $offset));
+			$offsetTimestamp = strtotime(sprintf('+%s day', $offset), $timestamp);
 			if(self::isValidTimeStamp($offsetTimestamp)) return $offsetTimestamp;
 			else throw new \Exception(self::getError('invalid.outcome.timestamp', $offsetTimestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 		} else throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);

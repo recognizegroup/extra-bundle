@@ -199,6 +199,21 @@ class ArrayUtilities {
 	}
 
 	/**
+	 * @param array $array
+	 * @param string $column
+	 * @param mixed $value
+	 * @param bool $deep
+	 */
+	public static function filterByColumnValue(array &$array, $column, $value, $deep = true) {
+		foreach($array as $key => $item) { // loop items
+			if($key == $column && $array[$key] == $value) unset($array[$key]); // Remove
+			elseif($deep && is_array($item)) { // Head deeper
+				self::filterByColumnValue($item, $column, $value);
+			}
+		}
+	}
+
+	/**
 	 * @param array $haystack
 	 * @param string|int $key
 	 */
