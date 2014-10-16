@@ -71,7 +71,7 @@ class DateTimeUtilities {
 	 * @return string
 	 */
 	public static function getFormattedDateTime($format, $timestamp = null, $returnValue = true) {
-		if(!is_null($timestamp) && self::isValidTimeStamp($timestamp)) { // Validate if required
+		if(!is_null($timestamp) && !self::isValidTimeStamp($timestamp)) { // Validate if required
 			throw new \Exception(self::getError('invalid.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
 		$dateTime = new \DateTime('now');
