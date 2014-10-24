@@ -16,7 +16,22 @@ class JsonResponse extends BaseJsonResponse {
 	 * @return string
 	 */
 	protected function jsonEncode($data) {
-		return json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK);
+		$this->fixNonNumericFloatValues($data);
+		return json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+	}
+
+	/**
+	 * @param array $data
+	 */
+	protected function fixNonNumericFloatValues(&$data) {
+		foreach($data as &$value) {
+			if(is_array($value) || is_object($value)) $this->fixNonNumericFloatValues($value);
+			else { // I frown upon this...
+				if(is_string($value) && is_numeric($value) && ($value == 0 || (substr($value, 0, 1) !== '0' && substr($value, 0, 1) != '+'))) {
+					$value = (preg_match('/\d+\.\d+/', $value)) ? (float)$value : (int)$value;
+				}
+			}
+		}
 	}
 
 	/**
