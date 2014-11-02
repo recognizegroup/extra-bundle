@@ -49,6 +49,16 @@ class DateTimeUtilities {
 	}
 
 	/**
+	 * @param $modification
+	 * @param null $timestamp
+	 * @return int
+	 * @throws \Exception
+	 */
+	public static function getModifiedTimeStamp($modification, $timestamp = null) {
+		return self::getModifiedDateTime($modification, $timestamp)->getTimestamp();
+	}
+
+	/**
 	 * @param string $modification
 	 * @param null $timestamp
 	 * @return \DateTime
@@ -102,13 +112,18 @@ class DateTimeUtilities {
 
 	/**
 	 * @param $timestamp
-	 * @return int
+	 * @param bool $object
 	 * @throws \Exception
+	 * @return int|\DateTime
 	 */
-	public static function fromMillisecondsTimeStamp($timestamp) {
+	public static function fromMillisecondsTimeStamp($timestamp, $object = false) {
 		$timestamp = ceil($timestamp / 1000);
 		if(self::isValidTimeStamp($timestamp)) {
-			return $timestamp;
+			if($object){
+				$dt = new \DateTime();
+				$dt->setTimestamp($timestamp);
+				return $dt;
+			} else return $timestamp;
 		}
 		else throw new \Exception(self::getError('invalid.unix.timestamp', $timestamp), Response::HTTP_INTERNAL_SERVER_ERROR);
 	}
@@ -200,6 +215,21 @@ class DateTimeUtilities {
 	}
 
 	/**
+	 * @param int $dayNumber
+	 * @param int $fromTimeStamp
+	 * @param int $untilTimeStamp
+	 * @return array
+	 */
+	public static function getDatesByDayNumberBetweenPeriod($dayNumber, $fromTimeStamp, $untilTimeStamp) {
+		$dates = array();
+		while($fromTimeStamp <= $untilTimeStamp) {
+			if(self::isDayOfWeek($fromTimeStamp, $dayNumber)) $dates[] = $fromTimeStamp;
+			$fromTimeStamp = self::getModifiedDateTime('+1 day', $fromTimeStamp)->getTimestamp();
+		}
+		return $dates;
+	}
+
+	/**
 	 * @param int $timestamp
 	 * @param int|array $day
 	 * @return bool
@@ -221,6 +251,20 @@ class DateTimeUtilities {
 		$dateTime = new \DateTime();
 		$dateTime->setTimestamp($timestamp);
 		return $dateTime;
+	}
+
+	/**
+	 * @param int $fromTimeStamp
+	 * @param int $untilTimeStamp
+	 * @return array
+	 */
+	public static function getWeekNumbersFromRange($fromTimeStamp, $untilTimeStamp) {
+		$weekNumbers = array();
+		$fromWeekNumber = date('W', $fromTimeStamp);
+		for($i = 0; $i <= (date('W', $untilTimeStamp) - $fromWeekNumber); $i++) {
+			$weekNumbers[] = $fromWeekNumber + $i;
+		}
+		return $weekNumbers;
 	}
 
 }

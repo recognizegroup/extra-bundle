@@ -66,8 +66,8 @@ class ArrayUtilities {
 
 	/**
 	 * @param array $array
-	 * @param $column
-	 * @param $value
+	 * @param string $column
+	 * @param array|string $value
 	 * @return mixed
 	 */
 	public static function findAllByColumnValue(array $array, $column, $value) {
@@ -93,7 +93,7 @@ class ArrayUtilities {
 	/**
 	 * @param array $array
 	 * @param string $column
-	 * @param string $value
+	 * @param array|string $value
 	 * @param bool $multiple
 	 * @throws \Exception
 	 * @return mixed
@@ -101,7 +101,8 @@ class ArrayUtilities {
 	private static function findByColumnValue(array $array, $column, $value, $multiple = false) {
 		$results = array();
 		foreach($array as $element) {
-			if(is_array($element) && array_key_exists($column, $element) && $element[$column] == $value) {
+			if(is_array($element) && array_key_exists($column, $element)
+				&& ((is_array($value)) ? in_array($element[$column], $value) : $element[$column] == $value)) {
 				$results[] = $element;
 			}
 		}
@@ -177,6 +178,11 @@ class ArrayUtilities {
 			}
 		}
 		return $values;
+	}
+
+	public function getFirstColumnValue(array $array, $column, $deep = true) {
+		$values = self::getColumnValues($array, $column, $deep);
+		return (!empty($values)) ? array_shift($values) : null;
 	}
 
 	/**
