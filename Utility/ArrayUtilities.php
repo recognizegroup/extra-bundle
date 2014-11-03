@@ -207,6 +207,15 @@ class ArrayUtilities {
 	/**
 	 * @param array $array
 	 * @param string $column
+	 * @return null
+	 */
+	public static function getColumnValue(array $array, $column) {
+		return ((array_key_exists($column, $array)) ? $array[$column] : null);
+	}
+
+	/**
+	 * @param array $array
+	 * @param string $column
 	 * @param mixed $value
 	 * @param bool $deep
 	 */

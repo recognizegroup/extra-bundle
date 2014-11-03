@@ -31,11 +31,14 @@ class FormUtilities {
 		$errors = array();
 		foreach($form->getErrors(true) as $error) {
 			/** @var \Symfony\Component\Form\FormError $error */
-			/** @var \Symfony\Component\Validator\ConstraintViolation $cause */
-			if($cause = $error->getCause()) {
+			if(method_exists($error, 'getCause')) {
+				/** @var \Symfony\Component\Validator\ConstraintViolation $cause */
+				$cause = $error->getCause();
 				$key = $cause->getPropertyPath();
 				$errors[$key] = $error->getMessage();
-			} else $errors[] = $error->getMessage();
+			} else {
+				$errors[] = $error->getMessage();
+			}
 		}
 		return $errors;
 	}
