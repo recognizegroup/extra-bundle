@@ -2,8 +2,8 @@
 
 namespace Recognize\ExtraBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller,
-	Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class BaseController
@@ -27,6 +27,28 @@ class BaseController extends Controller {
 	 */
 	protected function hasFlashMessage($type) {
 		return $this->get('session')->getFlashBag()->has($type);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getRootDir() {
+		return $this->get('kernel')->getRootDir();
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getWebDir() {
+		return $this->get('kernel')->getRootDir() . '/../web';
+	}
+
+	/**
+	 * @param Request $request
+	 * @return string
+	 */
+	protected function getRequestDir(Request $request = null) {
+		return $this->get('kernel')->getRootDir() . '/../web' . ($request != null ? $request->getBasePath() : '');
 	}
 
 }
