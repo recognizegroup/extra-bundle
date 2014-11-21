@@ -2,6 +2,7 @@
 
 namespace Recognize\ExtraBundle\Twig\Extension;
 
+use Recognize\ExtraBundle\Utility\DateTimeUtilities;
 use Recognize\ExtraBundle\Utility\StringUtilities;
 use Symfony\Bridge\Doctrine\RegistryInterface,
 	Symfony\Component\HttpFoundation\RequestStack;
@@ -38,7 +39,6 @@ class ExtraExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		$requestStack = $this->requestStack;
-
 		return array(
 			new \Twig_SimpleFunction('request', function($param) use ($requestStack) {
 				$request = $requestStack->getCurrentRequest();
@@ -67,7 +67,10 @@ class ExtraExtension extends \Twig_Extension {
 		return array(
 			'query_string' => new \Twig_Filter_Method($this, 'getQueryString'),
 			'unset' => new \Twig_Filter_Method($this, 'unsetValue'),
-			'url_slug' => new \Twig_Filter_Method($this, 'getUrlSlug')
+			'url_slug' => new \Twig_Filter_Method($this, 'getUrlSlug'),
+			'date_diff' => new \Twig_Filter_Method($this, 'getDateDiff'),
+			'date_locale' => new \Twig_Filter_Method($this, 'getLocaleDate'),
+			'date_modify' => new \Twig_Filter_Method($this, 'getModifiedDate')
 		);
 	}
 
@@ -95,6 +98,49 @@ class ExtraExtension extends \Twig_Extension {
 	 */
 	public function getRepository($repository) {
 		return $this->registry->getRepository($repository);
+	}
+
+	/**
+	 * @param int|string $fromTime
+	 * @param int|string $untilTime
+	 * @return \DateInterval
+	 */
+	public function getDateDiff($fromTime, $untilTime = null) {
+		if(!is_int($fromTime)) $fromTime = strtotime($fromTime);
+
+		if(is_null($untilTime)) $untilTime = time();
+		elseif(!is_int($untilTime)) $untilTime = strtotime($untilTime);
+
+		return DateTimeUtilities::getTimeStampDiff($fromTime, $untilTime);
+	}
+
+	/**
+	 * @param int|string $time
+	 * @param string $modification
+	 * @param null|string $format
+	 * @throws \Exception
+	 * @return \DateTime|string
+	 */
+	public function getModifiedDate($time, $modification, $format = null) {
+		if(!is_int($time)) $time = strtotime($time);
+
+		$modified = DateTimeUtilities::getModifiedDateTime($modification, $time);
+		return (is_null($format)) ? $modified : $modified->format($format);
+	}
+
+	/**
+	 * @param $time
+	 * @return bool|string
+	 * @throws \Exception
+	 */
+	public function getLocaleDate($time) {
+
+		if($time instanceof \DateTime) $time = $time->getTimestamp();
+		if(!is_int($time)) $time = strtotime($time);
+
+		return ($this->requestStack->getCurrentRequest()->get('_locale') == 'en')
+			? DateTimeUtilities::getFormattedDateTime('Y-m-d', $time)
+			: DateTimeUtilities::getFormattedDateTime('d-m-Y', $time);
 	}
 
 	/**

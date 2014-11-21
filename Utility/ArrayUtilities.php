@@ -106,7 +106,14 @@ class ArrayUtilities {
 				$results[] = $element;
 			}
 		}
-		if(!$multiple && sizeof($results) > 1) throw new \Exception(sprintf('Array contains more than one result matching criteria "%s"', $value));
+		if(!$multiple && sizeof($results) > 1) {
+			print_r($value . "\r\n");
+			print_r($column. "\r\n");
+			print_r($array);
+			exit;
+
+			throw new \Exception(sprintf('Array %s contains more than one result matching criteria "%s"', print_r($array, true), $value));
+		}
 		return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
 	}
 
