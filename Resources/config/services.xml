@@ -6,6 +6,7 @@
 		<parameter key="recognize_extra.routing.service.class">Recognize\ExtraBundle\Service\RoutingService</parameter>
 		<parameter key="recognize_extra.exception.listener.class">Recognize\ExtraBundle\EventListener\ExceptionListener</parameter>
 		<parameter key="recognize_extra.json.annotation.listener.class">Recognize\ExtraBundle\EventListener\JSONAnnotationListener</parameter>
+		<parameter key="recognize_extra.i18n.listener.class">Recognize\ExtraBundle\EventListener\I18nListener</parameter>
 		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
 		<parameter key="recognize_extra.csv.service.class">Recognize\ExtraBundle\Service\CsvService</parameter>
 		<parameter key="recognize_extra.content.service.class">Recognize\ExtraBundle\Service\ContentService</parameter>
@@ -13,6 +14,9 @@
 	<services>
 		<service id="recognize_extra.exception.listener" class="%recognize_extra.exception.listener.class%">
 			<tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="1000" />
+		</service>
+		<service id="recognize_extra.i18n.listener" class="%recognize_extra.i18n.listener.class%">
+			<tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
 		</service>
 		<service id="recognize_extra.routing.service" class="%recognize_extra.routing.service.class%">
 			<argument type="service" id="router"/>

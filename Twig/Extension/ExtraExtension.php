@@ -70,19 +70,8 @@ class ExtraExtension extends \Twig_Extension {
 			'url_slug' => new \Twig_Filter_Method($this, 'getUrlSlug'),
 			'date_diff' => new \Twig_Filter_Method($this, 'getDateDiff'),
 			'date_locale' => new \Twig_Filter_Method($this, 'getLocaleDate'),
-			'date_modify' => new \Twig_Filter_Method($this, 'getModifiedDate'),
-			'i18n_route_params' => new \Twig_Filter_Method($this, 'getI18nRouteParams'),
+			'date_modify' => new \Twig_Filter_Method($this, 'getModifiedDate')
 		);
-	}
-
-	/**
-	 * Removes the i18n _locale from params
-	 * @return mixed
-	 */
-	public function getI18nRouteParams() {
-		$params = $this->requestStack->getCurrentRequest()->attributes->get('_route_params');
-		if(array_key_exists('_locale', $params)) unset($params['_locale']); // Remove it
-		return $params;
 	}
 
 	/**
