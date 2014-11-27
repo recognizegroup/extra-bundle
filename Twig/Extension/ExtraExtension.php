@@ -56,7 +56,10 @@ class ExtraExtension extends \Twig_Extension {
 					return $filtered;
 				} else return '';
 			}),
-			'repository' => new \Twig_Function_Method($this, 'getRepository')
+			'repository' => new \Twig_Function_Method($this, 'getRepository'),
+			'match' => new \Twig_Function_Method($this, 'regexMatch'),
+			'matches' => new \Twig_Function_Method($this, 'regexMatches'),
+			'replace' => new \Twig_Function_Method($this, 'regexReplace'),
 		);
 	}
 
@@ -70,7 +73,9 @@ class ExtraExtension extends \Twig_Extension {
 			'url_slug' => new \Twig_Filter_Method($this, 'getUrlSlug'),
 			'date_diff' => new \Twig_Filter_Method($this, 'getDateDiff'),
 			'date_locale' => new \Twig_Filter_Method($this, 'getLocaleDate'),
-			'date_modify' => new \Twig_Filter_Method($this, 'getModifiedDate')
+			'date_modify' => new \Twig_Filter_Method($this, 'getModifiedDate'),
+			'abbr' => new \Twig_Filter_Method($this, 'abbreviate'),
+			'md5' => new \Twig_Filter_Method($this, 'getMD5String'),
 		);
 	}
 
@@ -127,6 +132,20 @@ class ExtraExtension extends \Twig_Extension {
 		$modified = DateTimeUtilities::getModifiedDateTime($modification, $time);
 		return (is_null($format)) ? $modified : $modified->format($format);
 	}
+	
+	/**
+	 * @param string @string
+	 * @param int @charNum
+	 * @return string
+	 */
+	public function abbreviate($string, $charNum = 40) {
+		$replacement = " ... ";
+		if (strlen($string) <= $charNum) {
+			return $string;
+		} else {
+			return substr($string, 0, $charNum - strlen($replacement)). $replacement;
+		} 
+	}
 
 	/**
 	 * @param $time
@@ -142,13 +161,22 @@ class ExtraExtension extends \Twig_Extension {
 			? DateTimeUtilities::getFormattedDateTime('Y-m-d', $time)
 			: DateTimeUtilities::getFormattedDateTime('d-m-Y', $time);
 	}
-
-	/**
-	 * @param $queryString
-	 * @return string
-	 */
-	public function getQueryString($queryString) {
-		return ($queryString) ? '?'.$queryString : '';
+	
+	public function getMD5String($string) {
+		return md5($string);
+	}
+	
+	public function regexMatch($pattern, $subject) {
+		preg_match($pattern, $subject, $matches);
+		return $matches[0];
+	}
+	
+	public function regexMatches($pattern, $subject) {
+		return (preg_match($pattern, $subject) == 1);
+	}
+	
+	public function regexReplace($pattern, $replacement, $subject) {
+		return preg_replace($pattern, $replacement, $subject);
 	}
 
 	/**

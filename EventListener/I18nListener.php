@@ -16,7 +16,7 @@ class I18nListener {
 	 */
 	public function onKernelRequest(GetResponseEvent $event) {
 		$routeParams = $event->getRequest()->get('_route_params');
-		if(array_key_exists('_locale', $routeParams)) {
+		if (is_array($routeParams) && array_key_exists('_locale', $routeParams)) {
 			unset($routeParams['_locale']); // Remove from route params
 			$event->getRequest()->attributes->set('_route_params', $routeParams);
 		}
