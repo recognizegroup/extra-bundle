@@ -179,6 +179,14 @@ class ExtraExtension extends \Twig_Extension {
 		return preg_replace($pattern, $replacement, $subject);
 	}
 
+    /**
+     * @param $queryString
+     * @return string
+     */
+    public function getQueryString($queryString) {
+        return ($queryString) ? '?'.$queryString : '';
+    }
+
 	/**
 	 * @return string Name
 	 */
