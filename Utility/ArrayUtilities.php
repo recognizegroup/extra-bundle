@@ -217,7 +217,7 @@ class ArrayUtilities {
 	 * @return null
 	 */
 	public static function getColumnValue(array $array, $column) {
-		return ((array_key_exists($column, $array)) ? $array[$column] : null);
+		return ((array_key_exists($column, $array) && $array[$column] != 'null') ? $array[$column] : null);
 	}
 
 	/**
