@@ -214,10 +214,11 @@ class ArrayUtilities {
 	/**
 	 * @param array $array
 	 * @param string $column
+	 * @param null $default
 	 * @return null
 	 */
-	public static function getColumnValue(array $array, $column) {
-		return ((array_key_exists($column, $array) && $array[$column] != 'null') ? $array[$column] : null);
+	public static function getColumnValue(array $array, $column, $default = null) {
+		return ((array_key_exists($column, $array) && $array[$column] != 'null') ? $array[$column] : $default);
 	}
 
 	/**

@@ -78,7 +78,7 @@ class DateTimeUtilities {
 	 * @param null $timestamp
 	 * @param bool $returnValue
 	 * @throws \Exception
-	 * @return string
+	 * @return string|\DateTime
 	 */
 	public static function getFormattedDateTime($format, $timestamp = null, $returnValue = true) {
 		if(!is_null($timestamp) && !self::isValidTimeStamp($timestamp)) { // Validate if required
@@ -265,6 +265,61 @@ class DateTimeUtilities {
 			$weekNumbers[] = $fromWeekNumber + $i;
 		}
 		return $weekNumbers;
+	}
+
+	/**
+	 * @param int $year
+	 * @param int $week
+	 * @return bool|string
+	 */
+	public static function getMonthForYearWeek($year, $week) {
+		return date('n', strtotime(sprintf('%sW%s', $year, $week)));
+	}
+
+	/**
+	 * @param int|array $day
+	 * @param int $fromTimeStamp
+	 * @param int $untilTimeStamp
+	 * @param null $format
+	 * @return array
+	 * @throws \Exception
+	 */
+	public static function getDayDatesBetween($day, $fromTimeStamp, $untilTimeStamp, $format = null) {
+		$dates = array();
+		$from = new \DateTime($fromTimeStamp);
+		$until = new \DateTime($untilTimeStamp);
+		while($from->format('Y-m-d') != $until->format('Y-m-d')) { // Loop until we're finished
+			$currentDay = date('N', $from->getTimestamp());
+			if((!is_array($day) && $currentDay == $day || is_array($day) && in_array($currentDay, $day))) {
+				$dates[] = (!is_null($format) ? $from->format($format) : $from->getTimestamp());
+			}
+			$from->modify('+1 days');
+		}
+		return $dates;
+	}
+
+	/**
+	 * @param int $timestamp
+	 * @param null $format
+	 * @return \DateTime|string
+	 */
+	public static function getMidnightForTimeStamp($timestamp, $format = null) {
+		$dateTime = new \DateTime();
+		$dateTime->setTimestamp(strtotime(date('Y-m-d', $timestamp)));
+		return (!is_null($format) ? $dateTime->format($format) : $dateTime);
+	}
+
+	/**
+	 * @param int $year
+	 * @param int $week
+	 * @param int $day
+	 * @param null $format
+	 * @return string|\DateTime
+	 */
+	public static function getISODateTime($year, $week, $day, $format = null) {
+		$dateTime = new \DateTime();
+		$dateTime->setISODate($year, $week, $day);
+		return self::getMidnightForTimeStamp($dateTime->getTimestamp(), $format);
 	}
 
 }
