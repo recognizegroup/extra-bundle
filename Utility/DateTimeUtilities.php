@@ -270,10 +270,14 @@ class DateTimeUtilities {
 	/**
 	 * @param int $year
 	 * @param int $week
+	 * @param int $day
+	 * @param null $format
 	 * @return bool|string
 	 */
-	public static function getMonthForYearWeek($year, $week) {
-		return date('n', strtotime(sprintf('%sW%s', $year, $week)));
+	public static function getMonthForYearWeekDay($year, $week, $day, $format = null) {
+		$dateTime = new \DateTime();
+		$dateTime->setISODate($year, $week, $day);
+		return (!is_null($format) ? $dateTime->format($format) : $dateTime);
 	}
 
 	/**
