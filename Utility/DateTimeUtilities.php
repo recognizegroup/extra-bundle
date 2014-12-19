@@ -317,12 +317,25 @@ class DateTimeUtilities {
 	 * @param int $year
 	 * @param int $week
 	 * @param int $day
-	 * @param null $format
+	 * @param string|null $format
 	 * @return string|\DateTime
 	 */
 	public static function getISODateTime($year, $week, $day, $format = null) {
 		$dateTime = new \DateTime();
 		$dateTime->setISODate($year, $week, $day);
+		return self::getMidnightForTimeStamp($dateTime->getTimestamp(), $format);
+	}
+
+	/**
+	 * @param int $year
+	 * @param int $month
+	 * @param int $day
+	 * @param string|null $format
+	 * @return \DateTime|string
+	 */
+	public static function getDateTime($year, $month, $day, $format = null) {
+		$dateTime = new \DateTime();
+		$dateTime->setDate($year, $month, $day);
 		return self::getMidnightForTimeStamp($dateTime->getTimestamp(), $format);
 	}
 
