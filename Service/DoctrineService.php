@@ -111,11 +111,13 @@ class DoctrineService {
 	}
 
 	/**
-	 * Rollback changes
+	 * Rollback changes and resets manager
 	 */
 	public function transactionRollback() {
 		if($this->transaction) {
 			$this->getConnection()->rollback();
+			$this->getConnection()->close();
+			$this->registry->resetManager();
 			$this->transaction = false;
 		}
 	}
