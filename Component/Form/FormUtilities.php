@@ -31,7 +31,7 @@ class FormUtilities {
 		$errors = array();
 		foreach($form->getErrors(true) as $error) {
 			/** @var \Symfony\Component\Form\FormError $error */
-			if(method_exists($error, 'getCause')) {
+			if($error instanceof \Symfony\Component\Validator\ConstraintViolation && method_exists($error, 'getCause')) {
 				/** @var \Symfony\Component\Validator\ConstraintViolation $cause */
 				$cause = $error->getCause();
 				$key = $cause->getPropertyPath();
