@@ -27,7 +27,6 @@ class CsvService {
 	 * @param null|string $enclosure
 	 * @param null|string $escape
 	 * @throws \Exception
-	 * @internal param bool $convert
 	 */
 	public function import($fileName, $delimiter, $callback, $enclosure = '"', $escape = '\\') {
 		try {
