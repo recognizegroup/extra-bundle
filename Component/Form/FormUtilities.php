@@ -2,9 +2,10 @@
 
 namespace Recognize\ExtraBundle\Component\Form;
 
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\Form,
+	Symfony\Component\Form\FormError,
+	Symfony\Component\HttpFoundation\Response,
+	Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Class FormUtilities
@@ -31,8 +32,7 @@ class FormUtilities {
 		$errors = array();
 		foreach($form->getErrors(true) as $error) {
 			/** @var \Symfony\Component\Form\FormError $error */
-			if($error instanceof \Symfony\Component\Validator\ConstraintViolation && method_exists($error, 'getCause')) {
-				/** @var \Symfony\Component\Validator\ConstraintViolation $cause */
+			if($error instanceof ConstraintViolation && method_exists($error, 'getCause')) {
 				$cause = $error->getCause();
 				$key = $cause->getPropertyPath();
 				$errors[$key] = $error->getMessage();

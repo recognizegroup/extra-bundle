@@ -35,7 +35,7 @@ class JsonResponse extends BaseJsonResponse {
 	}
 
 	/**
-	 * Overrides Symfony's jsonresponse set method
+	 * Overrides Symfony's json response set method
 	 *
 	 * @param array $data
 	 * @return BaseJsonResponse

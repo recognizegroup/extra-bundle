@@ -4,7 +4,6 @@
 	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 	<parameters>
 		<parameter key="recognize_extra.routing.service.class">Recognize\ExtraBundle\Service\RoutingService</parameter>
-		<parameter key="recognize_extra.exception.listener.class">Recognize\ExtraBundle\EventListener\ExceptionListener</parameter>
 		<parameter key="recognize_extra.json.annotation.listener.class">Recognize\ExtraBundle\EventListener\JSONAnnotationListener</parameter>
 		<parameter key="recognize_extra.i18n.listener.class">Recognize\ExtraBundle\EventListener\I18nListener</parameter>
 		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
@@ -12,9 +11,6 @@
 		<parameter key="recognize_extra.content.service.class">Recognize\ExtraBundle\Service\ContentService</parameter>
 	</parameters>
 	<services>
-		<service id="recognize_extra.exception.listener" class="%recognize_extra.exception.listener.class%">
-			<tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="1000" />
-		</service>
 		<service id="recognize_extra.i18n.listener" class="%recognize_extra.i18n.listener.class%">
 			<tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
 		</service>
@@ -22,8 +18,11 @@
 			<argument type="service" id="router"/>
 		</service>
 		<service id="recognize_extra.json.annotation.listener" class="%recognize_extra.json.annotation.listener.class%">
+			<tag name="monolog.logger" channel="jsonResponseListener" />
 			<tag name="kernel.event_subscriber" />
 			<argument type="service" id="annotation_reader" />
+			<argument type="service" id="logger" />
+			<argument type="service" id="security.context" />
 		</service>
 		<service id="recognize_extra.twig.extension" class="%recognize_extra.twig.extension.class%">
 			<tag name="twig.extension" />
