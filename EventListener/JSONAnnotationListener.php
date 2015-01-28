@@ -14,7 +14,8 @@ use Symfony\Component\HttpFoundation\Response,
 	Symfony\Component\EventDispatcher\EventSubscriberInterface,
 	Symfony\Component\Security\Core\SecurityContextInterface,
 	Symfony\Component\Security\Core\User\UserInterface,
-	Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+	Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent,
+	Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation,
 	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse;
@@ -72,9 +73,11 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	 */
 	private function getCurrentUser() {
 		$userName = 'guest';
-		if($user = $this->context->getToken()->getUser()) {
-			if($user instanceof UserInterface) { // Validate if there's an user
-				$userName = $user->getUsername();
+		if($this->context->getToken() instanceof TokenInterface) { // When there's a token
+			if($user = $this->context->getToken()->getUser()) {
+				if($user instanceof UserInterface) { // Validate if there's an user
+					$userName = $user->getUsername();
+				}
 			}
 		}
 		return $userName;
