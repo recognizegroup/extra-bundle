@@ -28,14 +28,14 @@ class ContentService {
 	 * @param string $username
 	 * @param string $password
 	 */
-	protected function setBasicAuthentication($username, $password) {
+	protected static function setBasicAuthentication($username, $password) {
 		self::$basicAuthentication = sprintf('%s:%s', $username, $password);
 	}
 
 	/**
 	 * @return null|string
 	 */
-	protected function getBasicAuthentication() {
+	protected static function getBasicAuthentication() {
 		return self::$basicAuthentication;
 	}
 
