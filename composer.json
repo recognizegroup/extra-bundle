@@ -12,7 +12,7 @@
 		}
 	],
 	"require": {
-		"symfony/http-foundation": ">=2.4,<2.6-dev",
+		"symfony/http-foundation": ">=2.4,<2.9-dev",
 		"sensio/framework-extra-bundle": "~3.0"
 	},
 	"target-dir": "Recognize/ExtraBundle",
