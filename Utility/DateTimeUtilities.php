@@ -187,8 +187,25 @@ class DateTimeUtilities {
 	 * @throws \Exception
 	 */
 	public static function isTimeStampBetween($timestamp, $fromTimeStamp, $untilTimeStamp) {
+		$fromTimeStamp = (is_int($fromTimeStamp) ? $fromTimeStamp : strtotime($fromTimeStamp));
+		$untilTimeStamp = (is_int($untilTimeStamp) ? $untilTimeStamp : strtotime($untilTimeStamp));
 		if(self::isValidTimeStamp($timestamp) && self::isValidTimeStamp($fromTimeStamp) && self::isValidTimeStamp($untilTimeStamp)) {
 			return ($timestamp > $fromTimeStamp && $timestamp < $untilTimeStamp);
+		} else throw new \Exception(self::getError('invalid.multiple.timestamp', array($timestamp, $fromTimeStamp, $untilTimeStamp)), Response::HTTP_INTERNAL_SERVER_ERROR);
+	}
+
+	/**
+	 * @param int $timestamp
+	 * @param int $fromTimeStamp
+	 * @param int $untilTimeStamp
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public static function isTimeStampBetweenOrEqual($timestamp, $fromTimeStamp, $untilTimeStamp) {
+		$fromTimeStamp = (is_int($fromTimeStamp) ? $fromTimeStamp : strtotime($fromTimeStamp));
+		$untilTimeStamp = (is_int($untilTimeStamp) ? $untilTimeStamp : strtotime($untilTimeStamp));
+		if(self::isValidTimeStamp($timestamp) && self::isValidTimeStamp($fromTimeStamp) && self::isValidTimeStamp($untilTimeStamp)) {
+			return ($timestamp >= $fromTimeStamp && $timestamp <= $untilTimeStamp);
 		} else throw new \Exception(self::getError('invalid.multiple.timestamp', array($timestamp, $fromTimeStamp, $untilTimeStamp)), Response::HTTP_INTERNAL_SERVER_ERROR);
 	}
 
@@ -286,13 +303,12 @@ class DateTimeUtilities {
 	 * @param int $untilTimeStamp
 	 * @param null $format
 	 * @return array
-	 * @throws \Exception
 	 */
 	public static function getDayDatesBetween($day, $fromTimeStamp, $untilTimeStamp, $format = null) {
 		$dates = array();
 		$from = new \DateTime($fromTimeStamp);
 		$until = new \DateTime($untilTimeStamp);
-		while($from->format('Y-m-d') != $until->format('Y-m-d')) { // Loop until we're finished
+		while($from->format('Y-m-d') <= $until->format('Y-m-d')) { // Loop until we're finished
 			$currentDay = date('N', $from->getTimestamp());
 			if((!is_array($day) && $currentDay == $day || is_array($day) && in_array($currentDay, $day))) {
 				$dates[] = (!is_null($format) ? $from->format($format) : $from->getTimestamp());
