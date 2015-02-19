@@ -38,11 +38,16 @@ class RequestDataService {
 	public function getRequestData(Request $request = null) {
 		if(empty($request)) return array();
 
-		$data = array('headers' => $request->headers->all(), 'request' => $request->request->all(), 'query' => $request->query->all());
+		$data = array( // Data used for an request
+			'attributes' => $request->attributes->all(),
+			'headers' => $request->headers->all(),
+			'request' => $request->request->all(),
+			'query' => $request->query->all()
+		);
 
 		ArrayUtilities::removeValues($data, ArrayUtilities::getColumnValue($this->config, 'exclude_fields', array()), true);
 
-		return array_filter($data);
+		return array_filter($data); // Filter empty arrays
 	}
 
 }

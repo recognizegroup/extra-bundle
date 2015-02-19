@@ -18,7 +18,8 @@ use Symfony\Component\HttpFoundation\Response,
 	Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation,
-	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse;
+	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse,
+	Recognize\ExtraBundle\Service\RequestDataService;
 
 /**
  * Class JSONAnnotationListener
@@ -48,14 +49,27 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	private $request;
 
 	/**
+	 * @var \Recognize\ExtraBundle\Service\RequestDataService
+	 */
+	private $rdService;
+
+
+	/**
 	 * @param \Doctrine\Common\Annotations\FileCacheReader $reader
 	 * @param \Psr\Log\LoggerInterface $logger
 	 * @param \Symfony\Component\Security\Core\SecurityContextInterface $context
+	 * @param \Recognize\ExtraBundle\Service\RequestDataService $requestDataService
 	 */
-	public function __construct(FileCacheReader $reader, LoggerInterface $logger, SecurityContextInterface $context) {
+	public function __construct(
+			FileCacheReader $reader,
+			LoggerInterface $logger,
+			SecurityContextInterface $context,
+			RequestDataService $requestDataService
+		) {
 		$this->reader = $reader;
 		$this->logger = $logger;
 		$this->context = $context;
+		$this->rdService = $requestDataService;
 	}
 
 	/**
@@ -90,14 +104,12 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 		try {
 			$statusCode = $event->getResponse()->getStatusCode();
 			$status = sprintf('[%s][%s]:', $statusCode, $this->getCurrentUser());
-			$info = array(
-				'attributes' => $this->request->attributes->all(),
-				'request' => $this->request->request->all(),
-				'query' => $this->request->query->all(),
-				'response' => (($event instanceof GetResponseForControllerResultEvent)
-					? $event->getControllerResult() : $event->getResponse()->getContent()
-				)
+
+			$info = $this->rdService->getRequestData($this->request);
+			$info['response'] = (($event instanceof GetResponseForControllerResultEvent)
+				? $event->getControllerResult() : $event->getResponse()->getContent()
 			);
+
 			if($statusCode == 200) $this->logger->info($status, $info);
 			else $this->logger->error($status, $info);
 		} catch(\Exception $e) {
