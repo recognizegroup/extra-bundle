@@ -1,6 +1,7 @@
 <?php
 namespace Recognize\ExtraBundle\DependencyInjection;
 
+use Recognize\ExtraBundle\Utility\ArrayUtilities;
 use Symfony\Component\DependencyInjection\ContainerBuilder,
 	Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
 	Symfony\Component\HttpKernel\DependencyInjection\Extension,
@@ -21,7 +22,10 @@ class RecognizeExtraExtension extends Extension {
 		$configuration = new Configuration();
 		$config = $this->processConfiguration($configuration, $configs);
 
-		$container->setParameter('recognize_extra.services.request_data', $config['services']['request_data']);
+		// Get configuration for services
+		$services = ArrayUtilities::getColumnValue($config, 'services', array());
+		$container->setParameter('recognize_extra.services.request_data', ArrayUtilities::getColumnValue($services, 'request_data', array()));
+
 
 		$loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.xml');
