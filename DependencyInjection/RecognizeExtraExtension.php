@@ -21,6 +21,8 @@ class RecognizeExtraExtension extends Extension {
 		$configuration = new Configuration();
 		$config = $this->processConfiguration($configuration, $configs);
 
+		$container->setParameter('recognize_extra.services.request_data', $config['services']['request_data']);
+
 		$loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.xml');
 	}

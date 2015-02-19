@@ -315,6 +315,24 @@ class ArrayUtilities {
 
 	/**
 	 * @param array $haystack
+	 * @param array $values
+	 * @param bool $deep
+	 */
+	public static function removeValues(array &$haystack, array $values, $deep = false) {
+		foreach($haystack as &$item) {
+			if($deep && is_array($item)) {
+				self::removeValues($item, $values, $deep);
+			} else {
+				foreach($values as $value) {
+					unset($haystack[$value]);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @param array $haystack
 	 * @param $column
 	 * @param callback $func
 	 * @param bool $deep

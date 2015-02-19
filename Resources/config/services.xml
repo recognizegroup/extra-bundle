@@ -9,6 +9,7 @@
 		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
 		<parameter key="recognize_extra.csv.service.class">Recognize\ExtraBundle\Service\CsvService</parameter>
 		<parameter key="recognize_extra.content.service.class">Recognize\ExtraBundle\Service\ContentService</parameter>
+		<parameter key="recognize_extra.request_data.service.class">Recognize\ExtraBundle\Service\RequestDataService</parameter>
 	</parameters>
 	<services>
 		<service id="recognize_extra.i18n.listener" class="%recognize_extra.i18n.listener.class%">
@@ -28,6 +29,9 @@
 			<tag name="twig.extension" />
 			<argument type="service" id="request_stack" />
 			<argument type="service" id="doctrine"/>
+		</service>
+		<service id="recognize_extra.request_data.service" class="%recognize_extra.request_data.service.class%">
+			<argument>%recognize_extra.services.request_data%</argument>
 		</service>
 		<service id="recognize_extra.csv.service" class="%recognize_extra.csv.service.class%" />
 		<service id="recognize_extra.content.service" class="%recognize_extra.content.service.class%" />

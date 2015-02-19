@@ -17,8 +17,20 @@ class Configuration implements ConfigurationInterface {
 	 */
 	public function getConfigTreeBuilder() {
 		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root('recognize_default');
-
+		$rootNode = $treeBuilder->root('recognize_extra');
+		$rootNode->children()
+			->arrayNode('services')
+				->children()
+					->arrayNode('request_data')
+						->children()
+							->arrayNode('exclude_fields')
+								->prototype('scalar')->defaultValue(array('password'))->end()
+							->end()
+						->end()
+					->end()
+				->end()
+			->end()
+		->end();
 		return $treeBuilder;
 	}
 
