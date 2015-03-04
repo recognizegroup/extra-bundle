@@ -4,6 +4,7 @@ namespace Recognize\ExtraBundle\Twig\Extension;
 
 use Recognize\ExtraBundle\Utility\DateTimeUtilities;
 use Recognize\ExtraBundle\Utility\StringUtilities;
+
 use Symfony\Bridge\Doctrine\RegistryInterface,
 	Symfony\Component\HttpFoundation\RequestStack;
 

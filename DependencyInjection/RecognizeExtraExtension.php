@@ -1,11 +1,13 @@
 <?php
 namespace Recognize\ExtraBundle\DependencyInjection;
 
-use Recognize\ExtraBundle\Utility\ArrayUtilities;
 use Symfony\Component\DependencyInjection\ContainerBuilder,
 	Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
 	Symfony\Component\HttpKernel\DependencyInjection\Extension,
-	Symfony\Component\Config\FileLocator;
+	Symfony\Component\Config\FileLocator,
+	Symfony\Component\HttpKernel\Kernel;
+
+use Recognize\ExtraBundle\Utility\ArrayUtilities;
 
 /**
  * Class RecognizeExtraExtension
@@ -28,7 +30,11 @@ class RecognizeExtraExtension extends Extension {
 
 
 		$loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-		$loader->load('services.xml');
+
+		// Prevent loading non-supported services
+		if(str_replace('.', '', Kernel::VERSION) < 2400) {
+			$loader->load('services_legacy.xml');
+		} else $loader->load('services.xml');
 	}
 
 	/**

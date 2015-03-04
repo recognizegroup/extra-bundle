@@ -27,11 +27,6 @@
 			<argument type="service" id="security.context" />
 			<argument type="service" id="recognize_extra.request_data.service" />
 		</service>
-		<service id="recognize_extra.twig.extension" class="%recognize_extra.twig.extension.class%">
-			<tag name="twig.extension" />
-			<argument type="service" id="request_stack" />
-			<argument type="service" id="doctrine"/>
-		</service>
 		<service id="recognize_extra.request_data.service" class="%recognize_extra.request_data.service.class%">
 			<argument>%recognize_extra.services.request_data%</argument>
 		</service>
