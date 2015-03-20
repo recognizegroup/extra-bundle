@@ -5,7 +5,6 @@ namespace Recognize\ExtraBundle\Service;
 use Doctrine\DBAL\Connection,
 	Doctrine\DBAL\Query\QueryBuilder;
 
-use Recognize\ExtraBundle\Utility\ArrayUtilities;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -138,7 +137,7 @@ class DoctrineService {
 		foreach($entities as $entity) { // loop over entities
 			$this->markEntityForRemoval($entity);
 		}
-		$this->doFlush();
+		$this->flush();
 	}
 
 	/**
@@ -157,22 +156,39 @@ class DoctrineService {
 	 */
 	private function removeEntity($entity, $flush = true) {
 		$this->registry->getManager()->remove($entity);
-		if($flush) $this->doFlush();
+		if($flush) $this->flush();
+	}
+
+	/**
+	 * @deprecated Will be removed in later versions, use persist() instead.
+	 * @param $entity
+	 * @param bool $flush
+	 */
+	public function persistEntity($entity, $flush = true) {
+		$this->persist($entity, $flush);
 	}
 
 	/**
 	 * @param $entity
 	 * @param bool $flush
 	 */
-	public function persistEntity($entity, $flush = true) {
+	public function persist($entity, $flush = true) {
 		$this->registry->getManager()->persist($entity);
-		if($flush) $this->doFlush();
+		if($flush) $this->flush();
+	}
+
+	/**
+	 * Triggers doctrine flush
+	 * @deprecated Will be removed in later versions, use flush() instead.
+	 */
+	public function doFlush() {
+		$this->flush();
 	}
 
 	/**
 	 * Triggers doctrine flush
 	 */
-	public function doFlush() {
+	public function flush() {
 		$this->registry->getManager()->flush();
 	}
 
