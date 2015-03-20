@@ -5,8 +5,8 @@ namespace Recognize\ExtraBundle\Repository;
 use Doctrine\ORM\EntityRepository,
 	Doctrine\ORM\Query\Expr,
 	Doctrine\ORM\Mapping\ClassMetadata,
-	Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\AST\HavingClause;
+	Doctrine\ORM\QueryBuilder,
+	Doctrine\ORM\Query\AST\HavingClause;
 
 /**
  * Class BaseRepository
