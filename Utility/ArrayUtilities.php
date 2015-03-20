@@ -169,24 +169,28 @@ class ArrayUtilities {
 	/**
 	 * @param array $array
 	 * @param string $column
-	 * @param array $values
 	 * @param bool $deep
 	 * @param bool $unique
 	 * @return array
 	 */
-	public static function getColumnValues(array $array, $column, $deep = true, $unique = false, array &$values = array()) {
+	public static function getColumnValues(array $array, $column, $deep = true, $unique = false) {
+		$values = array();
 		foreach($array as $key => $item) {
 			if($key == $column && (!is_array($item) || is_array($item) && !$deep)) {
-				if($unique && !in_array($item, $values)) {
-					$values[] = $item;
-				} elseif(!$unique) $values[] = $item;
+				$values[] = $item;
 			} elseif($deep && is_array($item)) {
-				self::getColumnValues($item, $column, $deep, $unique, $values);
+				$values = self::getColumnValues($item, $column, $deep, $unique, $values);
 			}
 		}
-		return $values;
+		return (($unique) ? array_unique($values) : $values);
 	}
 
+	/**
+	 * @param array $array
+	 * @param mixed $column
+	 * @param bool $deep
+	 * @return mixed|null
+	 */
 	public function getFirstColumnValue(array $array, $column, $deep = true) {
 		$values = self::getColumnValues($array, $column, $deep);
 		return (!empty($values)) ? array_shift($values) : null;
@@ -243,6 +247,18 @@ class ArrayUtilities {
 	public static function unsetByKey(array &$haystack, $key) {
 		if(array_key_exists($key, $haystack)) { // Make sure key exists
 			unset($haystack[$key]);
+		}
+	}
+
+	/**
+	 * @param array $array
+	 * @param string|int $oldKey
+	 * @param string|int $newKey
+	 */
+	public static function renameKey(array &$array, $oldKey, $newKey) {
+		if (array_key_exists($oldKey, $array)) {
+			$array[$newKey] = $array[$oldKey];
+			unset($array[$oldKey]);
 		}
 	}
 
