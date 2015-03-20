@@ -37,7 +37,7 @@ class BaseRepository extends EntityRepository {
 	protected function getEscapedCollection(Array $collection) {
 		foreach($collection as &$value) {
 			if(!is_numeric($value)) { // When it's not an numeric
-				$value = sprintf('%s', $value);
+				$value = $this->qb->expr()->literal($value);
 			}
 		}
 		return $collection;
