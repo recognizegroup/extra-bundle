@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM,
  *
  * @ORM\Entity(repositoryClass="Recognize\ExtraBundle\Repository\SettingRepository")
  * @ORM\Table(name="recognize_extra_setting", uniqueConstraints={
- *	@ORM\UniqueConstraint(name="UNIQUE_SETTING_KEY", columns={"fk_setting_id","key"})
+ *	@ORM\UniqueConstraint(name="UNIQUE_SETTING_KEY", columns={"fk_setting_id","`key`"})
  * })
  */
 class Setting {

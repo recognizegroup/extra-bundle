@@ -251,6 +251,18 @@ class ArrayUtilities {
 	}
 
 	/**
+	 * @param array $array
+	 * @param string|int $oldKey
+	 * @param string|int $newKey
+	 */
+	public static function renameKey(array &$array, $oldKey, $newKey) {
+		if (array_key_exists($oldKey, $array)) {
+			$array[$newKey] = $array[$oldKey];
+			unset($array[$oldKey]);
+		}
+	}
+
+	/**
 	 * @param array $haystack
 	 * @param mixed $value
 	 */
