@@ -176,10 +176,10 @@ class ArrayUtilities {
 	public static function getColumnValues(array $array, $column, $deep = true, $unique = false) {
 		$values = array();
 		foreach($array as $key => $item) {
-			if($key == $column && (!is_array($item) || is_array($item) && !$deep)) {
+			if($key == $column && (!is_array($item) || (is_array($item) && !$deep))) {
 				$values[] = $item;
 			} elseif($deep && is_array($item)) {
-				$values = self::getColumnValues($item, $column, $deep, $unique, $values);
+				$values = array_merge($values, self::getColumnValues($item, $column, $deep, $unique));
 			}
 		}
 		return (($unique) ? array_unique($values) : $values);
