@@ -58,10 +58,11 @@ class ArrayUtilities {
 	 * @param array $array
 	 * @param string $column
 	 * @param string $value
+	 * @param bool $deep
 	 * @return mixed
 	 */
-	public static function findOneByColumnValue(array $array, $column, $value) {
-		return self::findByColumnValue($array, $column, $value);
+	public static function findOneByColumnValue(array $array, $column, $value, $deep = false) {
+		return self::findByColumnValue($array, $column, $value, false, $deep);
 	}
 
 	/**
@@ -95,25 +96,19 @@ class ArrayUtilities {
 	 * @param string $column
 	 * @param array|string $value
 	 * @param bool $multiple
-	 * @throws \Exception
+	 * @param bool $deep
 	 * @return mixed
 	 */
-	private static function findByColumnValue(array $array, $column, $value, $multiple = false) {
+	private static function findByColumnValue(array $array, $column, $value, $multiple = false, $deep = false) {
 		$results = array();
-		foreach($array as $element) {
-			if(is_array($element) && array_key_exists($column, $element)
-				&& ((is_array($value)) ? in_array($element[$column], $value) : $element[$column] == $value)) {
+		foreach($array as $key => $element) {
+			if($key !== $column && $deep && is_array($element)) { // Go deeper
+				$results[] = self::findByColumnValue($element, $column, $value, $multiple, $deep);
+			} elseif($key === $column && $element === $value) {
 				$results[] = $element;
 			}
 		}
-		if(!$multiple && sizeof($results) > 1) {
-			print_r($value . "\r\n");
-			print_r($column. "\r\n");
-			print_r($array);
-			exit;
 
-			throw new \Exception(sprintf('Array %s contains more than one result matching criteria "%s"', print_r($array, true), $value));
-		}
 		return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
 	}
 
@@ -365,6 +360,27 @@ class ArrayUtilities {
 				if (is_callable($func)) $haystack[$key] = call_user_func($func, $item);
 			} elseif($deep && is_array($item)) {
 				self::funcColumnByKey($item, $column, $func, $deep);
+			}
+		}
+	}
+
+	/**
+	 * Search for array that contains an column with given value and calls callback when found.
+	 * @param array $haystack
+	 * @param int|string $column
+	 * @param mixed $value
+	 * @param callable $callback
+	 * @param bool $deep
+	 * @param null|int $lastKey
+	 * @throws \Exception
+	 */
+	public static function funcArrayByKeyValue(array &$haystack, $column, $value, $callback, $deep = false, $lastKey = null) {
+		if(!is_callable($callback)) throw new \Exception('Expected $callback to be callable');
+		foreach($haystack as $key => $item) {
+			if($deep && is_array($item)) { // Go deep first
+				self::funcArrayByKeyValue($item, $column, $value, $callback, $deep, $key);
+			} elseif($key == $column && $value == $item) {
+				call_user_func_array($callback, array($haystack, $lastKey));
 			}
 		}
 	}

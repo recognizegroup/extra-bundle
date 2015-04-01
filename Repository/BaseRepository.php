@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityRepository,
  * @package Recognize\ExtraBundle\Repository
  * @author Nick Obermeijer <n.obermeijer@recognize.nl>
  */
-class BaseRepository extends EntityRepository {
+class BaseRepository extends EntityRepository implements RepositoryInterface {
 
 	/**
 	 * @var \Doctrine\ORM\QueryBuilder
@@ -72,6 +72,28 @@ class BaseRepository extends EntityRepository {
 			if($filter instanceof Expr\Andx || $filter instanceof Expr\Comparison) $query->andWhere($filter);
 			elseif($filter instanceof HavingClause) $query->having($filter->conditionalExpression);
 			else throw new \Exception('Unsupported filter supplied; Expr\Andx, Expr\Comparison and HavingClause are supported');
+		}
+	}
+
+	/**
+	 * @param QueryBuilder $query
+	 * @param mixed $filter
+	 * @throws \Exception
+	 */
+	public function appendFilter(QueryBuilder &$query, $filter) {
+		if(!is_null($filter)) { // When set
+			$filters = (!is_array($filter)) ? array($filter) : $filter;
+			foreach($filters as $sFilter) { // Loop multiple filters
+				if($sFilter instanceof Expr\Andx || $sFilter instanceof Expr\Comparison) $query->andWhere($sFilter);
+				elseif($sFilter instanceof HavingClause) $query->andHaving($sFilter->conditionalExpression);
+				elseif(is_string($sFilter)) $query->andWhere($sFilter);
+				else { // Not supported filter
+					throw new \Exception(sprintf(
+						'Unsupported filter of type "%s" supplied; Expr\Andx, Expr\Comparison and HavingClause are supported',
+						((is_object($sFilter)) ? get_class($sFilter) : gettype($sFilter))
+					));
+				}
+			}
 		}
 	}
 
