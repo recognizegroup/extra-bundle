@@ -103,7 +103,9 @@ class ArrayUtilities {
 		$results = array();
 		foreach($array as $key => $element) {
 			if($key !== $column && $deep && is_array($element)) { // Go deeper
-				$results[] = self::findByColumnValue($element, $column, $value, $multiple, $deep);
+				if($result = self::findByColumnValue($element, $column, $value, $multiple, $deep)) {
+					$results[] = $result;
+				}
 			} elseif($key === $column && $element === $value) {
 				$results[] = $element;
 			}
