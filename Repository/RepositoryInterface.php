@@ -16,4 +16,9 @@ interface RepositoryInterface {
 	 */
 	public function getEntitiesByArray(array $collection, $field = 'id');
 
+	/**
+	 * @return \Doctrine\DBAL\Connection
+	 */
+	public function getConnection();
+
 }
