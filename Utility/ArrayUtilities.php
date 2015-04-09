@@ -385,4 +385,24 @@ class ArrayUtilities {
 		}
 	}
 
+    /**
+     * @param array $array
+     * @param string $column
+     * @param array|string $value
+     * @param bool $multiple
+     * @param bool $deep
+     * @return mixed
+     */
+    public static function findParentByColumnValue(array $array, $column, $value, $multiple = false, $deep = false) {
+        $results = array();
+        foreach($array as $key => $element) {
+            if(!array_key_exists($column, $element) && $deep && is_array($element)) { // Go deeper
+                $results[] = self::findParentByColumnValue($element, $column, $value, $multiple, $deep);
+            } elseif(array_key_exists($column, $element) && $element[$column] == $value) {
+                $results[] = $element;
+            }
+        }
+
+        return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
+    }
 }
