@@ -141,13 +141,25 @@ class DoctrineService {
 	}
 
 	/**
+	 * @deprecated Will be removed in later versions, use remove() instead.
 	 * @param $entity
 	 * @param bool $flush
 	 * @throws \Exception
 	 */
 	public function doRemove($entity, $flush = true) {
+		$this->remove($entity, $flush);
+	}
+
+	/**
+	 * @param $entity
+	 * @param bool $flush
+	 * @throws \Exception
+	 */
+	public function remove($entity, $flush = true) {
 		if(!$this->isEntity($entity)) throw new \Exception('Unable to remove entity, object is not an valid entity');
-		$this->removeEntity($entity, $flush);
+
+		$this->registry->getManager()->remove($entity);
+		if($flush) $this->flush();
 	}
 
 	/**
@@ -171,8 +183,11 @@ class DoctrineService {
 	/**
 	 * @param $entity
 	 * @param bool $flush
+	 * @throws \Exception
 	 */
 	public function persist($entity, $flush = true) {
+		if(!$this->isEntity($entity)) throw new \Exception('Unable to remove entity, object is not an valid entity');
+
 		$this->registry->getManager()->persist($entity);
 		if($flush) $this->flush();
 	}

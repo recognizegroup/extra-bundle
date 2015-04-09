@@ -127,4 +127,11 @@ class BaseRepository extends EntityRepository implements RepositoryInterface {
 			->getQuery()->getResult();
 	}
 
+	/**
+	 * @return \Doctrine\DBAL\Connection
+	 */
+	public function getConnection() {
+		return $this->getEntityManager()->getConnection();
+	}
+
 }

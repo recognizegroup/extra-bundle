@@ -153,7 +153,8 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 			$jsonResponse->setStatusCode($this->getStatusCode($event));
 			$jsonResponse->setData(array(
 				'status' => 'failed',
-				'data' => array('message' => $exception->getMessage())
+				'data' => array('message' => $exception->getMessage()),
+				'trace' => array('file' => $exception->getFile(), 'line' => $exception->getLine())
 			));
 			$event->setResponse($jsonResponse);
 			$this->logResponse($event);
