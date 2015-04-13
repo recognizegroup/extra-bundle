@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityRepository,
 	Doctrine\ORM\Mapping\ClassMetadata,
 	Doctrine\ORM\QueryBuilder,
 	Doctrine\ORM\Query\AST\HavingClause;
+use Recognize\ExtraBundle\Utility\SQLLimitUtilities;
 
 /**
  * Class BaseRepository
@@ -98,6 +99,22 @@ class BaseRepository extends EntityRepository implements RepositoryInterface {
 	}
 
 	/**
+	 * @param QueryBuilder $query
+	 * @param int $offset
+	 * @param int $limit
+	 * @param bool $count
+	 * @return string
+	 */
+	public function getLimitedDQL(QueryBuilder $query, $offset = null, $limit = null, $count = false) {
+		if(!$count && !is_null($offset) && !is_null($limit)) { // Make sure there's a limit and offset
+			list($offset, $limit) = SQLLimitUtilities::getOffsetLimit($offset, $limit);
+			return sprintf('%s LIMIT %s,%s', $query->getDQL(), $offset, $limit);
+		}
+		return $query->getDQL();
+	}
+
+	/**
+	 * @deprecated Use getLimitedDQL() instead
 	 * @param QueryBuilder $query
 	 * @param int $start
 	 * @param bool|int $limit

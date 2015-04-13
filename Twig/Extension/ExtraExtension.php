@@ -128,6 +128,7 @@ class ExtraExtension extends \Twig_Extension {
 	 * @return \DateTime|string
 	 */
 	public function getModifiedDate($time, $modification, $format = null) {
+		if($time instanceof \DateTime) $time = $time->getTimestamp();
 		if(!is_int($time)) $time = strtotime($time);
 
 		$modified = DateTimeUtilities::getModifiedDateTime($modification, $time);
