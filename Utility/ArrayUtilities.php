@@ -400,8 +400,10 @@ class ArrayUtilities {
         foreach($array as $key => $element) {
             if(!array_key_exists($column, $element) && $deep && is_array($element)) { // Go deeper
                 $results[] = self::findParentByColumnValue($element, $column, $value, $multiple, $deep);
-            } elseif(array_key_exists($column, $element) && $element[$column] == $value) {
-                $results[] = $element;
+            } elseif(array_key_exists($column, $element)) {
+               	if((is_array($value) && in_array($element[$column], $value)) || $element[$column] == $value) {
+					$results[] = $element;
+				}
             }
         }
 
