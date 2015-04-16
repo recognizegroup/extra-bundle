@@ -64,6 +64,7 @@ class BaseRepository extends EntityRepository implements RepositoryInterface {
 	}
 
 	/**
+	 * @deprecated Use appendFilter() instead
 	 * @param QueryBuilder $query
 	 * @param $filter
 	 * @throws \Exception
