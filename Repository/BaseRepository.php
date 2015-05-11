@@ -2,6 +2,7 @@
 
 namespace Recognize\ExtraBundle\Repository;
 
+use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\ORM\EntityRepository,
 	Doctrine\ORM\Query\Expr,
 	Doctrine\ORM\Mapping\ClassMetadata,
@@ -86,7 +87,13 @@ class BaseRepository extends EntityRepository implements RepositoryInterface {
 		if(!is_null($filter)) { // When set
 			$filters = (!is_array($filter)) ? array($filter) : $filter;
 			foreach($filters as $sFilter) { // Loop multiple filters
-				if($sFilter instanceof Expr\Andx || $sFilter instanceof Expr\Comparison) $query->andWhere($sFilter);
+				if($sFilter instanceof Expr\Andx
+                    || $sFilter instanceof Expr\Orx
+                    || $sFilter instanceof Expr\Comparison
+                ) $query->andWhere($sFilter);
+                elseif($sFilter instanceof CompositeExpression) {
+                    $query->andWhere($sFilter->__toString());
+                }
 				elseif($sFilter instanceof HavingClause) $query->andHaving($sFilter->conditionalExpression);
 				elseif(is_string($sFilter)) $query->andWhere($sFilter);
 				else { // Not supported filter
