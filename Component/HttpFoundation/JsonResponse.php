@@ -28,7 +28,7 @@ class JsonResponse extends BaseJsonResponse {
 			if(is_array($value) || is_object($value)) $this->fixNonNumericFloatValues($value);
 			else { // I frown upon this...
 				if(is_string($value) && is_numeric($value) && ($value == 0 || (substr($value, 0, 1) !== '0' && substr($value, 0, 1) != '+'))) {
-					$key[$key] = (preg_match('/\d+\.\d+/', $value)) ? (float)$value : (int)$value;
+					$data[$key] = (preg_match('/\d+\.\d+/', $value)) ? (float)$value : (int)$value;
 				}
 			}
 		}
