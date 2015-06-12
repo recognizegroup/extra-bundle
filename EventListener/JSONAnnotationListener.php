@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response,
 	Symfony\Component\HttpKernel\Event\FilterControllerEvent,
 	Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
 	Symfony\Component\EventDispatcher\EventSubscriberInterface,
-	Symfony\Component\Security\Core\SecurityContextInterface,
 	Symfony\Component\Security\Core\User\UserInterface,
 	Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent,
 	Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -20,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response,
 use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation,
 	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse,
 	Recognize\ExtraBundle\Service\RequestDataService;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class JSONAnnotationListener
@@ -54,16 +54,16 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	private $rdService;
 
 
-	/**
-	 * @param \Doctrine\Common\Annotations\FileCacheReader $reader
-	 * @param \Psr\Log\LoggerInterface $logger
-	 * @param \Symfony\Component\Security\Core\SecurityContextInterface $context
-	 * @param \Recognize\ExtraBundle\Service\RequestDataService $requestDataService
-	 */
+    /**
+     * @param \Doctrine\Common\Annotations\FileCacheReader $reader
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param TokenStorageInterface $context
+     * @param \Recognize\ExtraBundle\Service\RequestDataService $requestDataService
+     */
 	public function __construct(
 			FileCacheReader $reader,
 			LoggerInterface $logger,
-			SecurityContextInterface $context,
+            TokenStorageInterface $context,
 			RequestDataService $requestDataService
 		) {
 		$this->reader = $reader;

@@ -24,7 +24,7 @@
 			<tag name="kernel.event_subscriber" />
 			<argument type="service" id="annotation_reader" />
 			<argument type="service" id="logger" />
-			<argument type="service" id="security.context" />
+			<argument type="service" id="security.token_storage" />
 			<argument type="service" id="recognize_extra.request_data.service" />
 		</service>
 		<service id="recognize_extra.twig.extension" class="%recognize_extra.twig.extension.class%">
