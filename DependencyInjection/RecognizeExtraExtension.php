@@ -32,8 +32,12 @@ class RecognizeExtraExtension extends Extension {
 		$loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
 		// Prevent loading non-supported services
-        if(Kernel::MAJOR_VERSION < 2 || (Kernel::MAJOR_VERSION >= 2 && Kernel::MINOR_VERSION < 6)) {
-			$loader->load('services_legacy.xml');
+        if(Kernel::MAJOR_VERSION < 2 || (Kernel::MAJOR_VERSION >= 2 && Kernel::MINOR_VERSION < 4)) {
+			$loader->load('services_legacy_2_4.xml');
+
+		} else if(Kernel::MAJOR_VERSION < 2 || (Kernel::MAJOR_VERSION >= 2 && Kernel::MINOR_VERSION < 6)) {
+			$loader->load('services_legacy_2_6.xml');
+
 		} else $loader->load('services.xml');
 	}
 

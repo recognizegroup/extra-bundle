@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+	<parameters>
+		<parameter key="recognize_extra.routing.service.class">Recognize\ExtraBundle\Service\RoutingService</parameter>
+		<parameter key="recognize_extra.json.annotation.listener.class">Recognize\ExtraBundle\EventListener\JSONAnnotationListener</parameter>
+		<parameter key="recognize_extra.i18n.listener.class">Recognize\ExtraBundle\EventListener\I18nListener</parameter>
+		<parameter key="recognize_extra.twig.extension.class">Recognize\ExtraBundle\Twig\Extension\ExtraExtension</parameter>
+		<parameter key="recognize_extra.csv.service.class">Recognize\ExtraBundle\Service\CsvService</parameter>
+		<parameter key="recognize_extra.content.service.class">Recognize\ExtraBundle\Service\ContentService</parameter>
+		<parameter key="recognize_extra.request_data.service.class">Recognize\ExtraBundle\Service\RequestDataService</parameter>
+	</parameters>
+	<services>
+		<service id="recognize.logger" class="Psr\Log\NullLogger" />
+		<service id="recognize_extra.i18n.listener" class="%recognize_extra.i18n.listener.class%">
+			<tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
+		</service>
+		<service id="recognize_extra.routing.service" class="%recognize_extra.routing.service.class%">
+			<argument type="service" id="router"/>
+		</service>
+		<service id="recognize_extra.json.annotation.listener" class="%recognize_extra.json.annotation.listener.class%">
+			<tag name="monolog.logger" channel="jsonResponseListener" />
+			<tag name="kernel.event_subscriber" />
+			<argument type="service" id="annotation_reader" />
+			<argument type="service" id="logger" />
+			<argument type="service" id="security.context" />
+			<argument type="service" id="recognize_extra.request_data.service" />
+		</service>
+		<service id="recognize_extra.twig.extension" class="%recognize_extra.twig.extension.class%">
+			<tag name="twig.extension" />
+			<argument type="service" id="request_stack" />
+			<argument type="service" id="doctrine"/>
+		</service>
+		<service id="recognize_extra.request_data.service" class="%recognize_extra.request_data.service.class%">
+			<argument>%recognize_extra.services.request_data%</argument>
+		</service>
+		<service id="recognize_extra.csv.service" class="%recognize_extra.csv.service.class%" />
+		<service id="recognize_extra.content.service" class="%recognize_extra.content.service.class%" />
+	</services>
+</container>
