@@ -63,7 +63,7 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	public function __construct(
 			FileCacheReader $reader,
 			LoggerInterface $logger,
-            TokenStorageInterface $context,
+            $context,
 			RequestDataService $requestDataService
 		) {
 		$this->reader = $reader;
