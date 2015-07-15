@@ -12,10 +12,17 @@ use Symfony\Component\HttpFoundation\JsonResponse as BaseJsonResponse;
 class JsonResponse extends BaseJsonResponse {
 
 	/**
-	 * @param $data
+	 * @param $inputData
 	 * @return string
+	 * @internal param $data
 	 */
-	protected function jsonEncode($data) {
+	protected function jsonEncode($inputData) {
+		if($inputData instanceof \JsonSerializable) {
+			$data = $inputData->jsonSerialize();
+		} else {
+			$data = $inputData;
+		}
+
 		$newData = $this->fixNonNumericFloatValues($data);
 		return json_encode($newData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 	}
@@ -24,8 +31,13 @@ class JsonResponse extends BaseJsonResponse {
      * @param array $data
      * @return array
      */
-	protected function fixNonNumericFloatValues($data) {
+	protected function fixNonNumericFloatValues($inputData) {
         $newData = array();
+		if($inputData instanceof \JsonSerializable) {
+			$data = $inputData->jsonSerialize();
+		} else {
+			$data = $inputData;
+		}
 		foreach($data as $key => $value) {
 			if(is_array($value) || is_object($value)) {
                 $newData[$key] = $this->fixNonNumericFloatValues($value);
