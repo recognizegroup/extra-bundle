@@ -419,7 +419,7 @@ class ArrayUtilities {
 	 * @return mixed || null
 	 */
 	public static function findItemByValue(array $array, $prop, $val) {
-		$results = $this->findItemsByValue($array, $prop, $val);
+		$results = self::findItemsByValue($array, $prop, $val);
 		return (!empty($results)) ? array_shift($results) : null;
 	}
 
