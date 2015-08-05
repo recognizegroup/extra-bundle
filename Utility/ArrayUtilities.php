@@ -418,7 +418,7 @@ class ArrayUtilities {
 	 * @param mixed $val
 	 * @return mixed || null
 	 */
-	protected function findItemByValue(array $array, $prop, $val) {
+	public static function findItemByValue(array $array, $prop, $val) {
 		$results = $this->findItemsByValue($array, $prop, $val);
 		return (!empty($results)) ? array_shift($results) : null;
 	}
@@ -429,7 +429,7 @@ class ArrayUtilities {
 	 * @param mixed $val
 	 * @return array
 	 */
-	protected function findItemsByValue(array $array, $prop, $val) {
+	public static function findItemsByValue(array $array, $prop, $val) {
 		$results = array_filter($array, function($value) use (&$prop, &$val) {
 			if (!is_array($value) && is_object($value)) $value = (array)$value;
 			return (array_key_exists($prop, $value) && $value[$prop] == $val);
