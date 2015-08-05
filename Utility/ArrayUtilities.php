@@ -409,4 +409,31 @@ class ArrayUtilities {
 
         return (!empty($results)) ? (($multiple) ? $results : array_shift($results)) : null;
     }
+
+	// ---- Bart's simpler utilities ----
+
+	/**
+	 * @param array $array
+	 * @param string $prop
+	 * @param mixed $val
+	 * @return mixed || null
+	 */
+	protected function findItemByValue(array $array, $prop, $val) {
+		$results = $this->findItemsByValue($array, $prop, $val);
+		return (!empty($results)) ? array_shift($results) : null;
+	}
+
+	/**
+	 * @param array $array
+	 * @param string $prop
+	 * @param mixed $val
+	 * @return array
+	 */
+	protected function findItemsByValue(array $array, $prop, $val) {
+		$results = array_filter($array, function($value) use (&$prop, &$val) {
+			if (!is_array($value) && is_object($value)) $value = (array)$value;
+			return (array_key_exists($prop, $value) && $value[$prop] == $val);
+		});
+		return array_values($results);
+	}
 }
