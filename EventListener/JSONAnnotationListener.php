@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response,
 use Recognize\ExtraBundle\Configuration\JSONResponse as JSONAnnotation,
 	Recognize\ExtraBundle\Component\HttpFoundation\JsonResponse,
 	Recognize\ExtraBundle\Service\RequestDataService;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -139,6 +140,11 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	protected function getStatusCode(GetResponseForExceptionEvent $event = null) {
 		if($response = $event->getResponse()) { // When response is set...
 			return ($response->getStatusCode() != 0) ? $response->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+		}
+		if($event->getException() instanceof HttpExceptionInterface) {
+			/** @var HttpExceptionInterface $exception */
+			$exception = $event->getException();
+			return ($exception->getStatusCode() != 0) ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 		}
 		return ($event->getException()->getCode() != 0) ? $event->getException()->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 	}
