@@ -14,7 +14,9 @@ class CsvService {
 	 */
 	protected function convertValuesEncoding(array &$data) {
 		foreach($data as $key => $value) {
-			$value = iconv(mb_detect_encoding($value, mb_detect_order(), true), 'UTF-8', $value);
+			$encoding = mb_detect_encoding($value, mb_detect_order(), true);
+			if(!$encoding) $encoding = "Windows-1252";
+			$value = iconv($encoding, 'UTF-8', $value);
 			$value = trim($value);
 			$data[$key] = $value;
 		}
