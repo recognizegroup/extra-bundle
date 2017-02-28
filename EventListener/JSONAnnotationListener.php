@@ -5,6 +5,7 @@ namespace Recognize\ExtraBundle\EventListener;
 use Doctrine\Common\Annotations\FileCacheReader,
 	Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Annotations\Reader;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\HttpFoundation\Response,
@@ -56,13 +57,13 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 
 
     /**
-     * @param \Doctrine\Common\Annotations\FileCacheReader $reader
+     * @param Reader $reader
      * @param \Psr\Log\LoggerInterface $logger
      * @param TokenStorageInterface $context
      * @param \Recognize\ExtraBundle\Service\RequestDataService $requestDataService
      */
 	public function __construct(
-			FileCacheReader $reader,
+			Reader $reader,
 			LoggerInterface $logger,
             $context,
 			RequestDataService $requestDataService
@@ -111,8 +112,11 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 				? $event->getControllerResult() : $event->getResponse()->getContent()
 			);
 
-			if($statusCode == 200) $this->logger->info($status, $info);
-			else $this->logger->error($status, $info);
+			if($statusCode === 200) {
+			    $this->logger->info($status, $info);
+            } else {
+			    $this->logger->error($status, $info);
+            }
 		} catch(\Exception $e) {
 			// Prevent possible crashes for event logging
 		}
@@ -122,7 +126,9 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	 * @param \Symfony\Component\HttpKernel\Event\FilterControllerEvent $event
 	 */
 	public function onKernelController(FilterControllerEvent $event) {
-		if(!is_array($controller = $event->getController())) return; // Return when response is not an array
+		if(!is_array($controller = $event->getController())) {
+		    return;// Return when response is not an array
+        }
 		list($object, $method) = $controller; // Get object and method
 
 		$reflectionClass = new \ReflectionClass(ClassUtils::getClass($object));
@@ -139,18 +145,19 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 	 */
 	protected function getStatusCode(GetResponseForExceptionEvent $event = null) {
 		if($response = $event->getResponse()) { // When response is set...
-			return ($response->getStatusCode() != 0) ? $response->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+			return ($response->getStatusCode() !== 0) ? $response->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 		}
 		if($event->getException() instanceof HttpExceptionInterface) {
 			/** @var HttpExceptionInterface $exception */
 			$exception = $event->getException();
-			return ($exception->getStatusCode() != 0) ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+			return ($exception->getStatusCode() !== 0) ? $exception->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 		}
-		return ($event->getException()->getCode() != 0) ? $event->getException()->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+		return ($event->getException()->getCode() !== 0) ? $event->getException()->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	/**
 	 * @param \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event
+     * @throws \Exception
 	 */
 	public function onKernelException(GetResponseForExceptionEvent $event) {
 		if(0 === strpos($event->getRequest()->headers->get('Accept'), 'application/json')) {
@@ -169,15 +176,18 @@ class JSONAnnotationListener implements EventSubscriberInterface {
 
 	/**
 	 * @param \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent $event
+     * @throws \Exception
 	 */
 	public function onKernelView(GetResponseForControllerResultEvent $event) {
-		if (!$event->getRequest()->attributes->get('_json_response')) return;
+		if (!$event->getRequest()->attributes->get('_json_response')) {
+		    return;
+        }
 
 		$controllerData = $event->getControllerResult();
 		$jsonResponse = new JsonResponse();
 		if(array_key_exists('http_status_code', $controllerData)) {
 			$code = $controllerData['http_status_code'];
-			$jsonResponse->setStatusCode(($code != 0) ? $code : Response::HTTP_INTERNAL_SERVER_ERROR);
+			$jsonResponse->setStatusCode(($code !== 0) ? $code : Response::HTTP_INTERNAL_SERVER_ERROR);
 			unset($controllerData['http_status_code']); // Remove from response
 		}
 		$jsonResponse->setData($controllerData);
