@@ -1,23 +1,27 @@
 {
-	"name": "recognize/extra-bundle",
-	"type": "symfony-bundle",
-	"description": "Symfony2 RecognizeExtraBundle",
-	"keywords": ["recognize-extra-bundle", "RecognizeExtraBundle"],
-	"homepage": "http://www.recognize.nl",
-	"authors": [
-		{
-			"name": "Nick Obermeijer",
-			"email": "nick@recognize.nl",
-			"homepage": "http://www.recognize.nl/"
-		}
-	],
-	"require": {
-		"symfony/http-foundation": ">=2.4,<2.9-dev",
-		"sensio/framework-extra-bundle": "~3.0"
-	},
-	"target-dir": "Recognize/ExtraBundle",
-	"autoload": {
-		"psr-0": { "Recognize\\ExtraBundle": "" }
-	},
-	"minimum-stability": "alpha"
+    "name": "recognize/extra-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony2 RecognizeExtraBundle",
+    "keywords": ["recognize-extra-bundle", "RecognizeExtraBundle"],
+    "homepage": "http://www.recognize.nl",
+    "authors": [
+        {
+            "name": "Nick Obermeijer",
+            "email": "nick@recognize.nl",
+            "homepage": "http://www.recognize.nl/"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.31",
+        "symfony/symfony": "~2.8 || ~3.0",
+        "symfony/http-foundation": ">=2.4,<2.9-dev",
+        "sensio/framework-extra-bundle": "~3.0",
+        "twig/twig": "^1.0||^2.0",
+        "twig/extensions": "~1.0"
+    },
+    "target-dir": "Recognize/ExtraBundle",
+    "autoload": {
+        "psr-0": { "Recognize\\ExtraBundle": "" }
+    },
+    "minimum-stability": "alpha"
 }
