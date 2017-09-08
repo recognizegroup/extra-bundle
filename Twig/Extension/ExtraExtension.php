@@ -41,11 +41,11 @@ class ExtraExtension extends \Twig_Extension {
     public function getFunctions() {
         $requestStack = $this->requestStack;
         return array(
-            new \Twig_SimpleFunction('request', function($param) use ($requestStack) {
+            new \Twig_Function('request', function($param) use ($requestStack) {
                 $request = $requestStack->getCurrentRequest();
                 return $request->get($param);
             }),
-            new \Twig_SimpleFunction('queryString', function(array $filter = array(), $assoc = false) use ($requestStack) {
+            new \Twig_Function('queryString', function(array $filter = array(), $assoc = false) use ($requestStack) {
                 $stack = $requestStack->getCurrentRequest()->query->all();
                 $filtered = array_diff_key($stack, array_flip($filter));
                 if(!empty($filtered) && !$assoc) {
@@ -59,10 +59,10 @@ class ExtraExtension extends \Twig_Extension {
                     return '';
                 }
             }),
-            'repository' => new \Twig_SimpleFunction($this, 'getRepository'),
-            'match' => new \Twig_SimpleFunction($this, 'regexMatch'),
-            'matches' => new \Twig_SimpleFunction($this, 'regexMatches'),
-            'replace' => new \Twig_SimpleFunction($this, 'regexReplace'),
+            new \Twig_Function('repository', [$this, 'getRepository']),
+            new \Twig_Function('match', [$this, 'regexMatch']),
+            new \Twig_Function('matches', [$this, 'regexMatches']),
+            new \Twig_Function('replace', [$this, 'regexReplace']),
         );
     }
 
@@ -71,14 +71,14 @@ class ExtraExtension extends \Twig_Extension {
      */
     public function getFilters() {
         return array(
-            'query_string' => new \Twig_SimpleFilter($this, 'getQueryString'),
-            'unset' => new \Twig_SimpleFilter($this, 'unsetValue'),
-            'url_slug' => new \Twig_SimpleFilter($this, 'getUrlSlug'),
-            'date_diff' => new \Twig_SimpleFilter($this, 'getDateDiff'),
-            'date_locale' => new \Twig_SimpleFilter($this, 'getLocaleDate'),
-            'date_modify' => new \Twig_SimpleFilter($this, 'getModifiedDate'),
-            'abbr' => new \Twig_SimpleFilter($this, 'abbreviate'),
-            'md5' => new \Twig_SimpleFilter($this, 'getMD5String'),
+            new \Twig_Filter('query_string', [$this, 'getQueryString']),
+            new \Twig_Filter('unset', [$this, 'unsetValue']),
+            new \Twig_Filter('url_slug', [$this, 'getUrlSlug']),
+            new \Twig_Filter('date_diff', [$this, 'getDateDiff']),
+            new \Twig_Filter('date_locale', [$this, 'getLocaleDate']),
+            new \Twig_Filter('date_modify', [$this, 'getModifiedDate']),
+            new \Twig_Filter('abbr', [$this, 'abbreviate']),
+            new \Twig_Filter('md5', [$this, 'getMD5String']),
         );
     }
 
