@@ -165,7 +165,7 @@ class ExtraExtension extends \Twig_Extension {
      * @return bool|string
      * @throws \Exception
      */
-    public function getLocaleDate($time) {
+    public function getLocaleDate($time, $locale = null) {
 
         if($time instanceof \DateTime) {
             $time = $time->getTimestamp();
@@ -173,8 +173,12 @@ class ExtraExtension extends \Twig_Extension {
         if(!is_int($time)) {
             $time = strtotime($time);
         }
+        
+        if ($locale === null) {
+            $locale = $this->requestStack->getCurrentRequest()->get('_locale');
+        }
 
-        return ($this->requestStack->getCurrentRequest()->get('_locale') === 'en')
+        return ($locale === 'en')
             ? DateTimeUtilities::getFormattedDateTime('Y-m-d', $time)
             : DateTimeUtilities::getFormattedDateTime('d-m-Y', $time);
     }
